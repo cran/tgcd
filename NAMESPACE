@@ -1,0 +1,4 @@
+useDynLib(tgcd)
+exportPattern("^[^\\.]")
+
+S3method(tgcd, default)

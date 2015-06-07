@@ -1,0 +1,339 @@
+###
+tgcd <-
+function(Sigdata, npeak, inis=NULL, mdt=3,
+         nstart=30, elim=NULL, logy=FALSE, 
+         outfile=NULL, plot=TRUE)  {
+    UseMethod("tgcd")
+} #
+### 2015.06.01.
+tgcd.default <- 
+function(Sigdata, npeak, inis=NULL, mdt=3,
+         nstart=30, elim=NULL, logy=FALSE, 
+         outfile=NULL, plot=TRUE)  {
+        ### Stop if not.
+        stopifnot(ncol(Sigdata)==2L, 
+                  all(Sigdata[,1L,drop=TRUE]>0),
+                  all(Sigdata[,2L,drop=TRUE]>=0),
+                  length(npeak)==1L, is.numeric(npeak), 
+                  npeak %in% seq(13L), 3L*npeak<nrow(Sigdata), 
+                  is.null(inis) || is.matrix(inis),
+                  length(mdt)==1L, is.numeric(mdt), mdt>0,
+                  length(nstart)==1L, is.numeric(nstart), nstart>=1L, nstart<=1000L,
+                  is.null(elim) || is.numeric(elim),
+                  is.logical(logy), length(logy)==1L,
+                  is.null(outfile) || is.character(outfile),
+                  is.logical(plot), length(plot)==1L)
+        if (!is.null(inis))  {
+            if(!is.numeric(inis))  stop("Error: inis should be a numeric matrix!")
+            if(dim(inis)[1L]!=npeak ||
+               dim(inis)[2L]!=3L) stop("Error: incorrect dimensions of inis!")
+        } # end if.
+        if (!is.null(elim)) {
+            if(length(elim)!=2L) stop("Error: elim should be a two-element vector!")
+            if(elim[1L]>=elim[2L]) stop("Error: invalid elim!")
+            if(elim[1L]>=1.8) stop("Error: lower limit of elim is too large!")
+            if(elim[2L]<=2.2) stop("Error: upper limit of elim is too small!")
+        } # end if.
+        if (!is.null(outfile)) {
+            if(length(outfile)!=1L) stop("Error: outfile should be an one-element vector!")
+        } # end if.
+        ###
+        temp <- as.numeric(Sigdata[,1L,drop=TRUE])
+        signal <- as.numeric(Sigdata[,2L,drop=TRUE])
+        ###
+        if(is.null(inis))  {
+            abzero <- which(signal>(.Machine$double.eps)^0.3)
+            plot(temp[abzero], signal[abzero], type="l", col="skyblue3", 
+                 lwd=5, xlab="Temperature (K)", log=ifelse(logy,"y",""), 
+                 ylab="TL signal (counts)", main=paste("Clicking the mouse to select ", 
+                 npeak, " peak maxima:", sep=""))
+            grid(col="orangered2", lwd=1)
+            sldxy <- try(locator(n=npeak), silent=TRUE)
+            if(class(sldxy)=="try-error") {
+                stop("Error: no available starting values!")
+            } else {
+                sldxy_index <- order(sldxy$x, decreasing=FALSE)
+                sldxy$x <- sldxy$x[sldxy_index]
+                sldxy$y <- sldxy$y[sldxy_index]
+            } # end if.
+        } # end if.
+        ###
+        minTEMPER <- min(temp)
+        maxTEMPER <- max(temp)
+        minINTENS <- min(signal)
+        maxINTENS <- max(signal)
+        ###
+        ### Function used for setting initial
+        ### parameters manually (interactively).
+        setpars <-function(npeak, sldx, sldy)  {
+            mat1 <- mat2 <- mat3 <- 
+            as.data.frame(matrix(nrow=npeak+1L, ncol=5L))
+            ###
+            ### Default TL growth peak intensity. 
+            mat1[1L,] <-  c("Peak", "INTENS(min)", "INTENS(max)",  
+                            "INTEN(ini)", "INTENS(fix)")
+            mat1[-1L,1L] <- paste(seq(npeak),"th-Peak", sep="")
+            mat1[-1L,2L] <-  minINTENS*0.8
+            mat1[-1L,3L] <-  maxINTENS*1.2  
+            mat1[-1L,4L] <- if (is.null(inis)) {
+                sldy
+            } else {
+                inis[,1L,drop=TRUE]
+            } # end if.
+            mat1[-1L,5L] <- FALSE
+            ###
+            ### Default activation energy.
+            mat2[1L,]<- c("Peak", "ENERGY(min)", "ENERGY(max)", 
+                          "ENERGY(ini)", "ENERGY(fix)")
+            mat2[-1L,1L] <- paste(seq(npeak),"th-Peak", sep="")
+            mat2[-1L,2L] <-  if (is.null(elim)) 0.5 else elim[1L]
+            mat2[-1L,3L] <-  if (is.null(elim)) 5.0 else elim[2L]
+            mat2[-1L,4L] <- if (is.null(inis)) {
+                runif(n=npeak,min=1.8, max=2.2)
+            } else {
+                inis[,2L,drop=TRUE]
+            } # end if.
+            mat2[-1L,5L] <- FALSE
+            ###
+            ### Default temperature at the peak maximum.
+            mat3[1L,] <- c("Peak", "TEMPER(min)", "TEMPER(max)",  
+                           "TEMPER(ini)", "TEMPER(fix)")
+            mat3[-1L,1L] <- paste(seq(npeak),"th-Peak", sep="")
+            mat3[-1L,2L] <-  minTEMPER
+            mat3[-1L,3L] <-  maxTEMPER
+            mat3[-1L,4L] <- if (is.null(inis)) {
+                sldx
+            } else {
+                inis[,3L,drop=TRUE]
+            } # end if.
+            mat3[-1L,5L] <- FALSE
+            ###
+            mat <- rbind(mat1, rep("    ", 5L),
+                         mat2, rep("    ", 5L), 
+                         mat3)
+            ###
+            if(is.null(inis)) {
+                pars <- try(edit(name=mat), silent=TRUE)
+                if (class(pars)=="try-error") {
+                    stop("Error: incorrect parameter modification!")
+                } # end if.
+            } else {
+                pars <- mat
+            } # end if.
+            ###
+            return(pars)
+        } # end function setpars.
+       ###
+       ###
+       ### cat("Set parameter constraints:\n")
+       pars <- setpars(npeak=npeak, sldx=sldxy$x, sldy=sldxy$y)
+       indx <- seq(from=2L, to=npeak+1L, by=1L)
+       ###
+       ###
+       ### TL growth peak intensity.
+       ### Check non-finite vlaues.
+       intensity1 <- as.numeric(pars[indx,2L,drop=TRUE])
+       whichloc <- which(!is.finite(intensity1))
+       if (length(whichloc)>=1L)  {
+           stop("Error: non-finite lower bound of INTENS")
+       } # end if.
+       intensity2 <- as.numeric(pars[indx,3L,drop=TRUE])
+       whichloc <- which(!is.finite(intensity2))
+       if (length(whichloc)>=1L)  {
+           stop("Error: non-finite upper bound of INTENS")
+       } # end if.
+       intensity3 <- as.numeric(pars[indx,4L,drop=TRUE])
+       whichloc <- which(!is.finite(intensity3))
+       if (length(whichloc)>=1L)  {
+           stop("Error: non-finite initial of INTENS")
+       } # end if.
+       ###
+       ### Check bounds.
+       whichloc <- which(intensity3<intensity1 | 
+                         intensity3>intensity2)
+       if (length(whichloc)>=1L)  {
+           stop("Error: unbounded initial of INTENS")
+       } # end if.
+       ### 
+       ### Check logical values.
+       fix_intensity <- pars[indx,5L,drop=TRUE]
+       if (!all(fix_intensity %in% c("TRUE", "FALSE", "T", "F")))  {
+           stop("Error: non-logical variable in the 5th column of INTENS!")
+       } # end if.
+       fix_intensity <- as.logical(fix_intensity)
+       intensity1[fix_intensity==TRUE] <- 
+       intensity3[fix_intensity==TRUE]
+       intensity2[fix_intensity==TRUE] <- 
+       intensity3[fix_intensity==TRUE]
+       ###
+       ###
+       ### Activation energy. 
+       ### Check non-finite values.
+       energy1 <- as.numeric(pars[indx+(npeak+2L),2L,drop=TRUE])
+       whichloc <- which(!is.finite(energy1)) 
+       if (length(whichloc)>=1L)  {
+           stop("Error: non-finite lower bound of ENERGY!")
+       } # end if.
+       energy2 <- as.numeric(pars[indx+(npeak+2L),3L,drop=TRUE])
+       whichloc <- which(!is.finite(energy2)) 
+       if (length(whichloc)>=1L)  {
+           stop("Error: non-finite upper bound of ENERGY!")
+       } # end if.
+       energy3 <- as.numeric(pars[indx+(npeak+2L),4L,drop=TRUE])
+       whichloc <- which(!is.finite(energy3)) 
+       if (length(whichloc)>=1L)  {
+           stop("Error: non-finite initial of ENERGY!")
+       } # end if.
+       ###
+       ### Check bounds.
+       whichloc <- which(energy3<energy1 | 
+                         energy3>energy2)
+       if (length(whichloc)>=1L)  {
+           stop("Error: unbounded initial of ENERGY")
+       } # end if.
+       ### Check logical values.
+       fix_energy <- pars[indx+(npeak+2L),5L,drop=TRUE]
+       if (!all(fix_energy %in% c("TRUE", "FALSE", "T", "F")))  {
+           stop("Error: non-logical variable in the 5th column of ENERGY!")
+       } # end if.
+       fix_energy <- as.logical(fix_energy)
+       energy1[fix_energy==TRUE] <- 
+       energy3[fix_energy==TRUE]
+       energy2[fix_energy==TRUE] <- 
+       energy3[fix_energy==TRUE]
+       ###
+       ###
+       ### Temperature at the peak maximum.
+       ### Check non-finite values.
+       temperature1 <- as.numeric(pars[indx+2L*(npeak+2L),2L,drop=TRUE])
+       whichloc <- which(!is.finite(temperature1))
+       if (length(whichloc)>=1L)  {
+           stop("Error: non-finite lower bound of TEMPER")
+       } # end if.
+       temperature2 <- as.numeric(pars[indx+2L*(npeak+2L),3L,drop=TRUE])
+       whichloc <- which(!is.finite(temperature2))
+       if (length(whichloc)>=1L)  {
+           stop("Error: non-finite upper bound of TEMPER")
+       } # end if.
+       temperature3 <- as.numeric(pars[indx+2L*(npeak+2L),4L,drop=TRUE])
+       whichloc <- which(!is.finite(temperature3))
+       if (length(whichloc)>=1L)  {
+           stop("Error: non-finite initial of TEMPER")
+       } # end if.
+       ### Check bounds.
+       whichloc <- which(temperature3<temperature1 | 
+                         temperature3>temperature2)
+       if (length(whichloc)>=1L)  {
+           stop("Error: unbounded initial of TEMPER")
+       } # end if.
+       ### Check logical values.
+       fix_temperature <- pars[indx+2L*(npeak+2L),5L,drop=TRUE]
+       if (!all(fix_temperature %in% c("TRUE", "FALSE", "T", "F")))  {
+           stop("Error: non-logical variable in the 5th column of TEMPER!")
+       } # end if.
+       fix_temperature <- as.logical(fix_temperature)
+       temperature1[fix_temperature==TRUE] <- 
+       temperature3[fix_temperature==TRUE]
+       temperature2[fix_temperature==TRUE] <- 
+       temperature3[fix_temperature==TRUE]
+       ###
+       nd <- length(temp)
+       n2 <- 3L*npeak
+       stdp <- double(n2)
+       cond <- fmin <- message <- 0
+       ###
+       lower <- c(intensity1,energy1, temperature1)
+       upper <- c(intensity2,energy2, temperature2)
+       pars <- c(intensity3,energy3, temperature3)
+       ###
+       res <- .Fortran("tgcd", as.numeric(temp), as.numeric(signal), as.integer(nd),
+                       pars=as.double(pars), stdp=as.double(stdp), as.integer(n2), 
+                       fmin=as.double(fmin), message=as.integer(message), 
+                       as.double(lower), as.double(upper), as.integer(nstart),
+                       as.double(mdt), PACKAGE="tgcd")
+       if (res$message!=0) {
+           stop("Error: fail in glow curve deconvolution!")
+       } # end if.
+       ###
+       pars <- matrix(res$pars, ncol=3L)
+       stdp <- matrix(res$stdp, ncol=3L)
+       index <- order(pars[,3L,drop=TRUE], decreasing=FALSE)
+       pars <- pars[index,,drop=FALSE]
+       stdp <- stdp[index,,drop=FALSE]
+       colnames(pars) <- c("INTENS", "ENERGY", "TEMPER")
+       rownames(pars) <-paste(seq(npeak),"th-Peak",sep="")
+       colnames(stdp) <- c("s(INTENS)", "s(ENERGY)", "s(TEMPER)")
+       rownames(stdp) <-paste(seq(npeak),"th-Peak",sep="")
+       ###
+       FOM <- res$fmin/sum(signal)*100
+       ###
+       output <-list(pars=pars, stdpars=stdp, FOM=FOM)
+       ###
+       kbz <- 8.617385e-5
+       ###
+       alpha <- function (x)  {
+           a0 <- 0.267773734; a1 <- 8.6347608925
+           a2 <- 18.059016973; a3 <- 8.5733287401
+           b0 <- 3.9584969228; b1 <- 21.0996530827
+           b2 <- 25.6329561486; b3 <- 9.5733223454
+           return(1.0-(a0+a1*x+a2*x^2L+a3*x^3L+x^4L)/
+                 (b0+b1*x+b2*x^2L+b3*x^3L+x^4L) )
+       } # end function alpha.
+       ###
+       CompSig <- matrix(nrow=nd, ncol=npeak)
+       for(i in seq(npeak)) {
+           maxi <- pars[i,1L]
+           engy <- pars[i,2L]
+           maxt <- pars[i,3L]
+           xa <- engy/kbz/maxt
+           xb <- engy/kbz/temp
+           CompSig[,i] <- maxi*exp(xa-xb)*exp(xa*(alpha(xa)-
+                          temp/maxt*alpha(xb)*exp(xa-xb)))
+       } # end for. 
+       rowsumSig <- rowSums(CompSig)
+       ###
+       if (plot==TRUE) {
+           layout(cbind(c(1L,1L,1L,2L),c(1L,1L,1L,2L)))
+           par(mar=c(0,5.1,3.1,1.1))
+           lineCol <- c("deepskyblue", "orangered", "purple", 
+                        "violetred", "yellowgreen", "lightblue", 
+                        "goldenrod", "forestgreen", "blue", 
+                        "plum", "tan", "violet", "grey50")
+           plot(temp, signal, type="p", pch=21, bg="white", cex=0.8,
+                ylab="TL signal (counts)", las=0, lab=c(7,7,9), xaxt="n", 
+                xaxs="r", yaxs="i")
+           XaxisCentral <- median(axTicks(side=1L))
+           for (i in seq(npeak)) {
+               points(temp,CompSig[,i,drop=TRUE], type="l", 
+                      lwd=2, col=lineCol[i])
+           } # end for.
+           points(temp, rowsumSig, 
+                  type="l", lwd=2, col="black")
+           legend(ifelse(temp[which.max(signal)]>XaxisCentral,"topleft","topright"),
+                  legend=c("Fitted.Curve", paste(seq(npeak),"th-Peak",sep="")), 
+                  col=c("black", lineCol[seq(npeak)]), pch=c(21, rep(NA,npeak)),
+                  lty=rep("solid",npeak), yjust=2, ncol=1, cex=1.5, bty="o", 
+                  lwd=2, pt.bg="white")
+           ###
+           par(mar=c(5.1,5.1,0,1.1))
+           plot(temp, signal-rowsumSig, type="o", 
+                xlab="Temperature(K)", ylab="Residuals",
+                las=0, lab=c(7,7,9), xaxs="r", yaxs="i", 
+                pch=21, bg="black", cex=0.5)
+           abline(h=0)
+           box(lwd=2L)
+           ###
+           par(mar=c(5,4,4,2)+0.1)
+           layout(1L)
+       } # end if.
+       ###
+       if (!is.null(outfile)) {
+           CompSig <- cbind(rowsumSig, signal, CompSig)
+           colnames(CompSig) <- c("Fit.Signal", "Obs.Signal", 
+                    paste("Comp.", seq(npeak), sep = ""))
+           write.csv(CompSig, file=paste(outfile, ".csv", sep = ""))
+       } # end if.
+       ###
+       return(output)                 
+} # end fucntion tgcd.
+###

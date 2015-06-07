@@ -1,0 +1,19 @@
+Package: tgcd
+Type: Package
+Title: Thermoluminescence Glow Curve Deconvolution
+Version: 1.4
+Date: 2015-06-06
+Author: Jorge More [ctb], Burton Garbow [ctb], Kenneth Hillstrom [ctb], John Burkardt [ctb], Jun Peng [aut, cre]
+Maintainer: Jun Peng <pengjun10@mails.ucas.ac.cn>
+Authors@R: c( person("Jorge", "More", role = "ctb"), 
+  person("Burton", "Garbow", role = "ctb"), 
+  person("Kenneth", "Hillstrom", role = "ctb"),
+  person("John", "Burkardt", role = "ctb"),
+  person("Jun", "Peng", role = c("aut","cre"), email="pengjun10@mails.ucas.ac.cn"))
+Description: Deconvolving first-order thermoluminescence glow curves using a modified Levenberg-Marquardt algorithm. It provides the possibility of setting constraints or fixing any of parameters. User-provided initially-guessed values can be used for model initialization. It also offers an interactive way to initialize parameters by clicking with a mouse on a plot at positions where peak maxima should be located. The optimal estimate is obtained by "try-and-error".
+License: GPL-2 | GPL-3
+Depends: R (>= 3.0.1)
+Packaged: 2015-06-06 09:06:10 UTC; pengjun
+NeedsCompilation: yes
+Repository: CRAN
+Date/Publication: 2015-06-07 08:32:48

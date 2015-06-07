@@ -1,0 +1,11 @@
+a3ce65f467ba4a3cb5203b2940bb9552 *DESCRIPTION
+2562fd80898abc7eb3b0885bc478a406 *NAMESPACE
+809cdb972a9f14db4167a3588a73d53d *R/tgcd.R
+a96e11367c9ce20a74dde2f052f79608 *data/Refglow.RData
+e7b59307f7f0efb6cc6ecc93ac006322 *man/Refglow.Rd
+51a5da272c6be36da5da246835e7745e *man/tgcd.Rd
+c9ca88813ac4c56f3d297cb06845b8f8 *src/hpSort.f90
+aeb568901490e2952001474dfe6328e1 *src/inverse.f90
+05551028c34625cbe2e30d732187e643 *src/minpack.f90
+e721a95fe6d3d0543465278b45e299d2 *src/numHess.f90
+38dafe82151b4f68769d4fd4e1ffe049 *src/tgcd.f90
