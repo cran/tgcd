@@ -2,14 +2,14 @@
 tgcd <-
 function(Sigdata, npeak, inis=NULL, mdt=3,
          nstart=30, elim=NULL, logy=FALSE, 
-         outfile=NULL, plot=TRUE)  {
+         hr=NULL, outfile=NULL, plot=TRUE)  {
     UseMethod("tgcd")
 } #
 ### 2015.06.01.
 tgcd.default <- 
 function(Sigdata, npeak, inis=NULL, mdt=3,
          nstart=30, elim=NULL, logy=FALSE, 
-         outfile=NULL, plot=TRUE)  {
+         hr=NULL, outfile=NULL, plot=TRUE)  {
         ### Stop if not.
         stopifnot(ncol(Sigdata)==2L, 
                   all(Sigdata[,1L,drop=TRUE]>0),
@@ -21,6 +21,7 @@ function(Sigdata, npeak, inis=NULL, mdt=3,
                   length(nstart)==1L, is.numeric(nstart), nstart>=1L, nstart<=1000L,
                   is.null(elim) || is.numeric(elim),
                   is.logical(logy), length(logy)==1L,
+                  is.null(hr) || is.numeric(hr),
                   is.null(outfile) || is.character(outfile),
                   is.logical(plot), length(plot)==1L)
         if (!is.null(inis))  {
@@ -34,6 +35,10 @@ function(Sigdata, npeak, inis=NULL, mdt=3,
             if(elim[1L]>=1.8) stop("Error: lower limit of elim is too large!")
             if(elim[2L]<=2.2) stop("Error: upper limit of elim is too small!")
         } # end if.
+        if (!is.null(hr)) {
+            if(length(hr)!=1L) stop("Error: hr should be a one-element vector!")
+            if(hr<=0) stop("Error: hr should be larger than zero!")
+        } # end if.
         if (!is.null(outfile)) {
             if(length(outfile)!=1L) stop("Error: outfile should be an one-element vector!")
         } # end if.
@@ -45,7 +50,7 @@ function(Sigdata, npeak, inis=NULL, mdt=3,
             abzero <- which(signal>(.Machine$double.eps)^0.3)
             plot(temp[abzero], signal[abzero], type="l", col="skyblue3", 
                  lwd=5, xlab="Temperature (K)", log=ifelse(logy,"y",""), 
-                 ylab="TL signal (counts)", main=paste("Clicking the mouse to select ", 
+                 ylab="TL intensity (counts)", main=paste("Clicking the mouse to select ", 
                  npeak, " peak maxima:", sep=""))
             grid(col="orangered2", lwd=1)
             sldxy <- try(locator(n=npeak), silent=TRUE)
@@ -73,12 +78,12 @@ function(Sigdata, npeak, inis=NULL, mdt=3,
             mat1[1L,] <-  c("Peak", "INTENS(min)", "INTENS(max)",  
                             "INTEN(ini)", "INTENS(fix)")
             mat1[-1L,1L] <- paste(seq(npeak),"th-Peak", sep="")
-            mat1[-1L,2L] <-  minINTENS*0.8
-            mat1[-1L,3L] <-  maxINTENS*1.2  
+            mat1[-1L,2L] <-  round(minINTENS*0.8, 3L)
+            mat1[-1L,3L] <-  round(maxINTENS*1.2, 3L) 
             mat1[-1L,4L] <- if (is.null(inis)) {
-                sldy
+                round(sldy, 3L)
             } else {
-                inis[,1L,drop=TRUE]
+                round(inis[,1L,drop=TRUE], 3L)
             } # end if.
             mat1[-1L,5L] <- FALSE
             ###
@@ -86,12 +91,12 @@ function(Sigdata, npeak, inis=NULL, mdt=3,
             mat2[1L,]<- c("Peak", "ENERGY(min)", "ENERGY(max)", 
                           "ENERGY(ini)", "ENERGY(fix)")
             mat2[-1L,1L] <- paste(seq(npeak),"th-Peak", sep="")
-            mat2[-1L,2L] <-  if (is.null(elim)) 0.5 else elim[1L]
-            mat2[-1L,3L] <-  if (is.null(elim)) 5.0 else elim[2L]
+            mat2[-1L,2L] <-  if (is.null(elim)) 0.5 else round(elim[1L], 3L)
+            mat2[-1L,3L] <-  if (is.null(elim)) 5.0 else round(elim[2L], 3L)
             mat2[-1L,4L] <- if (is.null(inis)) {
-                runif(n=npeak,min=1.8, max=2.2)
+                round(runif(n=npeak,min=1.8, max=2.2), 3L)
             } else {
-                inis[,2L,drop=TRUE]
+                round(inis[,2L,drop=TRUE], 3L)
             } # end if.
             mat2[-1L,5L] <- FALSE
             ###
@@ -99,12 +104,12 @@ function(Sigdata, npeak, inis=NULL, mdt=3,
             mat3[1L,] <- c("Peak", "TEMPER(min)", "TEMPER(max)",  
                            "TEMPER(ini)", "TEMPER(fix)")
             mat3[-1L,1L] <- paste(seq(npeak),"th-Peak", sep="")
-            mat3[-1L,2L] <-  minTEMPER
-            mat3[-1L,3L] <-  maxTEMPER
+            mat3[-1L,2L] <-  round(minTEMPER, 3L)
+            mat3[-1L,3L] <-  round(maxTEMPER, 3L)
             mat3[-1L,4L] <- if (is.null(inis)) {
-                sldx
+                round(sldx, 3L)
             } else {
-                inis[,3L,drop=TRUE]
+                round(inis[,3L,drop=TRUE], 3L)
             } # end if.
             mat3[-1L,5L] <- FALSE
             ###
@@ -240,7 +245,7 @@ function(Sigdata, npeak, inis=NULL, mdt=3,
        nd <- length(temp)
        n2 <- 3L*npeak
        stdp <- double(n2)
-       cond <- fmin <- message <- 0
+       fmin <- message <- 0
        ###
        lower <- c(intensity1,energy1, temperature1)
        upper <- c(intensity2,energy2, temperature2)
@@ -265,10 +270,6 @@ function(Sigdata, npeak, inis=NULL, mdt=3,
        colnames(stdp) <- c("s(INTENS)", "s(ENERGY)", "s(TEMPER)")
        rownames(stdp) <-paste(seq(npeak),"th-Peak",sep="")
        ###
-       FOM <- res$fmin/sum(signal)*100
-       ###
-       output <-list(pars=pars, stdpars=stdp, FOM=FOM)
-       ###
        kbz <- 8.617385e-5
        ###
        alpha <- function (x)  {
@@ -291,6 +292,19 @@ function(Sigdata, npeak, inis=NULL, mdt=3,
                           temp/maxt*alpha(xb)*exp(xa-xb)))
        } # end for. 
        rowsumSig <- rowSums(CompSig)
+       FOM <- res$fmin/sum(rowsumSig)*100
+       ###
+       if (!is.null(hr))  {
+           calff <- function(et)  {
+               energy <- et[1L]
+               temper <- et[2L]
+               return (hr*energy/kbz/temper^2L*exp(energy/kbz/temper))
+           } # end function calff.
+           ff <- apply(pars[,-1L,drop=FALSE], MARGIN=1L, calff)
+           output <-list(pars=pars, stdpars=stdp, ff=ff, FOM=FOM)
+       } else {
+           output <-list(pars=pars, stdpars=stdp, FOM=FOM)
+       } # end if
        ###
        if (plot==TRUE) {
            layout(cbind(c(1L,1L,1L,2L),c(1L,1L,1L,2L)))
@@ -300,8 +314,9 @@ function(Sigdata, npeak, inis=NULL, mdt=3,
                         "goldenrod", "forestgreen", "blue", 
                         "plum", "tan", "violet", "grey50")
            plot(temp, signal, type="p", pch=21, bg="white", cex=0.8,
-                ylab="TL signal (counts)", las=0, lab=c(7,7,9), xaxt="n", 
+                ylab="TL intensity (counts)", las=0, lab=c(7,7,9), xaxt="n", 
                 xaxs="r", yaxs="i")
+           box(lwd=2L)
            XaxisCentral <- median(axTicks(side=1L))
            for (i in seq(npeak)) {
                points(temp,CompSig[,i,drop=TRUE], type="l", 
@@ -328,9 +343,9 @@ function(Sigdata, npeak, inis=NULL, mdt=3,
        } # end if.
        ###
        if (!is.null(outfile)) {
-           CompSig <- cbind(rowsumSig, signal, CompSig)
-           colnames(CompSig) <- c("Fit.Signal", "Obs.Signal", 
-                    paste("Comp.", seq(npeak), sep = ""))
+           CompSig <- cbind(temp, signal, rowsumSig,  CompSig)
+           colnames(CompSig) <- c("Temperature", "Obs.Signal", 
+               "Fit.Signal", paste("Comp.", seq(npeak), sep = ""))
            write.csv(CompSig, file=paste(outfile, ".csv", sep = ""))
        } # end if.
        ###

@@ -10,7 +10,7 @@ Thermoluminescence glow curve deconvolution (TGCD).
 \usage{
 tgcd(Sigdata, npeak, inis = NULL, mdt = 3,
      nstart = 30, elim = NULL, logy = FALSE, 
-     outfile = NULL, plot = TRUE)
+     hr = NULL, outfile = NULL, plot = TRUE)
 }
 
 \arguments{
@@ -29,10 +29,12 @@ the appearance of strongly overlapping peaks. A conservative \code{mdt} is adopt
 
   \item{elim}{\link{vector}(with default): lower and upper limits for the activation energy, default \code{elim=c(0.5, 5)} }
 
-
   \item{logy}{\link{logical}(with default): draw the y-axis of the plot used for locating peak maxima with a logarithmic scale or not}
 
-  \item{outfile}{\link{character}(optional): if specified, fitted signal values for each glow peak will be written to a file named \code{"outfile"} in \code{CSV} format and saved to the current work directory}
+  \item{hr}{\link{numeric}(optional): the linear heating rate used for calculating the frequency factor}
+
+  \item{outfile}{\link{character}(optional): if specified, fitted signal values for each glow peak will be written to a file named \code{"outfile"} in \code{CSV} format and 
+saved to the current work directory}
 
   \item{plot}{\link{logical}(with default): draw a plot according to the fitting result or not}
 }
@@ -43,8 +45,8 @@ polynomials (Bos et al., 1993; Puchalska and Bilski, 2006) using the Levenberg-M
 The fitting model for a single glow peak is:\cr
 \code{I(T)=Im*exp(xa-xb)*exp(xa*(alpha(xa)-T/Tm*exp(xa-xb)*alpha(xb)))}\cr
 where \code{xa=E/k/Tm}, \code{xb=E/k/T}, \code{alpha(x)} is a quotient of fourth order polynomials, 
-\code{I} is the glow peak intensity, \code{E} the activation energy, \code{k} the Boltzmann constant (\code{k=8.617385e-5}), 
-T the temperature with constant heating rate, \code{Tm} the temperature at maximum thermoluminescence intensity, and \code{Im} 
+\code{I} is the glow peak intensity, \code{E} the activation energy in eV, \code{k} the Boltzmann constant in eV/K (\code{k=8.617385e-5}), 
+T the temperature in K with constant heating rate in K/s, \code{Tm} the temperature at maximum thermoluminescence intensity, and \code{Im} 
 the maximum intensity.\cr\cr
 The procedure minimizes the objective:\cr
 \eqn{fcn=\sum_{i=1}^n |y_i^o-y_i^f|, i=1,...,n}\cr
@@ -69,6 +71,7 @@ generated \bold{Dialog Table} if \code{inis=NULL}:\cr
 Return a list containing the following elements:
    \item{pars}{optimized parameters stored in a matrix}
    \item{stdpars}{standard errors of parameters estimated by numerical difference-approximation}
+   \item{ff}{resultant frequency factor if \code{hr!=NULL}}
    \item{FOM}{minimized figure of merit}
 }
 
@@ -102,10 +105,11 @@ A lack of background counts in the analyzed data is assumed. To obtain reliable 
 by subtracting from measured data before analysis.
 }
 
-\examples{
-# Load package "tgcd".
-  require(tgcd)
+\seealso{
+\link{simPeak}
+}
 
+\examples{
 # Load the data.
   data(Refglow)
 
@@ -116,7 +120,7 @@ by subtracting from measured data before analysis.
   tgcd(Refglow$Refglow002, npeak=4, 
        inis=startingPars, nstart=10)
 
-# Deconvolve Refglow009 with 9 peaks.
+# Deconvolve Refglow009 with 9 peaks, not run.
 # startingPars <- cbind(
 #      c(9680, 19500, 23420, 60010, 5580, 4250, 6720, 1790, 2260), # Im
 #      c(1.2, 1.3, 1.6, 2.0,  2.0, 1.4, 1.6, 1.9, 1.0),            # E

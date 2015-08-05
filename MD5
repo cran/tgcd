@@ -1,9 +1,12 @@
-a3ce65f467ba4a3cb5203b2940bb9552 *DESCRIPTION
-2562fd80898abc7eb3b0885bc478a406 *NAMESPACE
-809cdb972a9f14db4167a3588a73d53d *R/tgcd.R
+e98d2cbd3bd7dcbff5fb33bd0cf2c20e *DESCRIPTION
+345161f9a46c98072dbeef1adfeb99de *NAMESPACE
+71af95f11cad944fca7b47fef55c242f *R/simPeak.R
+552110c24b23fff43ba863ab3f7a0cba *R/tgcd.R
 a96e11367c9ce20a74dde2f052f79608 *data/Refglow.RData
-e7b59307f7f0efb6cc6ecc93ac006322 *man/Refglow.Rd
-51a5da272c6be36da5da246835e7745e *man/tgcd.Rd
+e8a70b85503029ab2948ff7e213d27dd *man/Refglow.Rd
+58a2b722025c2c61765b2f17c2365af5 *man/simPeak.Rd
+d414b7554be8bcf1a72781a240e4b368 *man/tgcd.Rd
+2c731f275d7907b3c86547c9f4223c71 *src/BulirschStoer.f90
 c9ca88813ac4c56f3d297cb06845b8f8 *src/hpSort.f90
 aeb568901490e2952001474dfe6328e1 *src/inverse.f90
 05551028c34625cbe2e30d732187e643 *src/minpack.f90

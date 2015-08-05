@@ -31,10 +31,14 @@ Bos AJJ, Piters TM, Gomez Ros JM, Delgado A, 1994. An intercomparison of glow cu
 }
 
 \examples{
-data(Refglow)
-names(Refglow)
+ # Load package "tgcd".
+  require(tgcd)
+
+  data(Refglow)
+  names(Refglow)
 }
 
 \keyword{package tgcd}
 \keyword{Thermoluminescence}
+\keyword{Glow curve simulation}
 \keyword{Glow curve deconvolution}
