@@ -1,7 +1,7 @@
-subroutine tgcd(xd,yd,nd,pars,n2,fmin,&
-                message,lower,upper,nstart,mdt)
+subroutine tgcd1(xd,yd,nd,pars,n2,fmin,&
+                 message,lower,upper,nstart,mdt)
 !---------------------------------------------------
-! Subroutine tgcd() is used for thermoluminescence 
+! Subroutine tgcd1() is used for thermoluminescence 
 ! glow curve deconvolution using the 
 ! Levenberg–Marquardt algorithm.
 !---------------------------------------------------
@@ -19,9 +19,9 @@ subroutine tgcd(xd,yd,nd,pars,n2,fmin,&
 !      mdt:: input, real value, minimum distance
 !             between each temperature.
 !---------------------------------------------------
-! Author:: Peng Jun, 2015.06.01, revised in 2015.09.12.
+! Author:: Peng Jun, 2015.09.11.
 !---------------------------------------------------
-! Dependence:: subroutine lmtl; subroutine hpSort.
+! Dependence:: subroutine lmtl1; subroutine hpSort.
 !---------------------------------------------------
     implicit none
     integer(kind=4), intent(in):: nd, n2, nstart
@@ -33,16 +33,16 @@ subroutine tgcd(xd,yd,nd,pars,n2,fmin,&
     ! Local variables.
     real   (kind=8):: ran(n2), ranpars(n2), ranfmin, &
                       minfmin, unifa(n2), unifb(n2),&
-                      orderTemp(n2/3), mindist
-    integer(kind=4):: i, info, indx(n2/3)
+                      orderTemp(n2/4), mindist
+    integer(kind=4):: i, info, indx(n2/4)
     !
-    call lmtl(xd,yd,nd,pars,n2,&
-              fmin,info,lower,upper)
+    call lmtl1(xd,yd,nd,pars,n2,&
+               fmin,info,lower,upper)
     !
-    orderTemp = pars(2*n2/3+1:n2)
-    call hpSort(orderTemp, n2/3, indx) 
-    mindist = minval(orderTemp(2:n2/3)-&
-                     orderTemp(1:n2/3-1))
+    orderTemp = pars(2*n2/4+1:3*n2/4)
+    call hpSort(orderTemp, n2/4, indx) 
+    mindist = minval(orderTemp(2:n2/4)-&
+                     orderTemp(1:n2/4-1))
     !
     if (info==0 .and. mindist>=mdt) then
         message = 0
@@ -60,26 +60,28 @@ subroutine tgcd(xd,yd,nd,pars,n2,fmin,&
         end if
         !
         ! INTENS.
-        unifa(1:n2/3) = pars(1:n2/3)*0.7
-        unifb(1:n2/3) = pars(1:n2/3)*1.0
+        unifa(1:n2/4) = pars(1:n2/4)*0.7
+        unifb(1:n2/4) = pars(1:n2/4)*1.0
         ! ENERGY.
-        unifa(n2/3+1:2*n2/3) = pars(n2/3+1:2*n2/3)*0.95
-        unifb(n2/3+1:2*n2/3) = pars(n2/3+1:2*n2/3)*1.05
+        unifa(n2/4+1:2*n2/4) = pars(n2/4+1:2*n2/4)*0.95
+        unifb(n2/4+1:2*n2/4) = pars(n2/4+1:2*n2/4)*1.05
         ! TEMPER.
-        unifa(2*n2/3+1:n2) = pars(2*n2/3+1:n2)*0.95
-        unifb(2*n2/3+1:n2) = pars(2*n2/3+1:n2)*1.05
-        !
+        unifa(2*n2/4+1:3*n2/4) = pars(2*n2/4+1:3*n2/4)*0.95
+        unifb(2*n2/4+1:3*n2/4) = pars(2*n2/4+1:3*n2/4)*1.05
+        ! bValue.
+        unifa(3*n2/4+1:n2) = 1.1
+        unifb(3*n2/4+1:n2) = 1.3
         ! Try-and-error.
         do i=1,  nstart
             call random_number(ran)
             ranpars = unifa + ran*(unifb-unifa)
             !
-            call lmtl(xd,yd,nd,ranpars,n2,&
-                      ranfmin,info,lower,upper)
+            call lmtl1(xd,yd,nd,ranpars,n2,&
+                       ranfmin,info,lower,upper)
             !
-            orderTemp = ranpars(2*n2/3+1:n2)
-            call hpSort(orderTemp, n2/3, indx) 
-            mindist = minval(orderTemp(2:n2/3)-orderTemp(1:n2/3-1))
+            orderTemp = ranpars(2*n2/4+1:3*n2/4)
+            call hpSort(orderTemp, n2/4, indx) 
+            mindist = minval(orderTemp(2:n2/4)-orderTemp(1:n2/4-1))
             !
             if (info==0 .and. mindist>=mdt)  then
                 if (ranfmin<minfmin)  then
@@ -93,12 +95,12 @@ subroutine tgcd(xd,yd,nd,pars,n2,fmin,&
     end if
     !
     return
-end subroutine tgcd
+end subroutine tgcd1
 !
-subroutine lmtl(xd,yd,nd,pars,n2,&
-                fmin,message,lower,upper)
+subroutine lmtl1(xd,yd,nd,pars,n2,&
+                 fmin,message,lower,upper)
 !----------------------------------------------------
-! Subroutine lmtl() is used for fitting a TL glow 
+! Subroutine lmtl1() is used for fitting a TL glow 
 ! curve using the Levenberg-Marquardt algorithm.
 !----------------------------------------------------
 !    xd(nd):: input, real values, observation X.
@@ -112,9 +114,9 @@ subroutine lmtl(xd,yd,nd,pars,n2,&
 ! lower(n2):: input, real values, lower bounds.
 ! upper(n2):: input, real values, upper bounds.
 !------------------------------------------------------
-! Author:: Peng Jun, 2015.05.26, revised in 2015.09.12.
+! Author:: Peng Jun, 2015.09.12.
 !------------------------------------------------------
-! Dependence:: subroutine lmdif1; subroutine tgcfunc.
+! Dependence:: subroutine lmdif1; subroutine tgcfunc1
 !------------------------------------------------------
     implicit none
     integer(kind=4), intent(in):: nd, n2
@@ -127,11 +129,11 @@ subroutine lmtl(xd,yd,nd,pars,n2,&
     integer(kind=4):: info, i
     real   (kind=8), parameter:: tol=1.0e-05
     real   (kind=8):: fvec(nd)
-    external:: tgcfunc
+    external:: tgcfunc1
     !
     fmin = -99.0
     !
-    call lmdif1(tgcfunc,nd,n2,pars,fvec,&
+    call lmdif1(tgcfunc1,nd,n2,pars,fvec,&
                 tol,info,xd,yd,lower,upper)
     !
     if (info==1 .or. info==2 .or. info==3) then
@@ -144,12 +146,12 @@ subroutine lmtl(xd,yd,nd,pars,n2,&
     fmin = sum(fvec**2)
     !
     return
-end subroutine lmtl
+end subroutine lmtl1
 !
-subroutine tgcfunc(nd,n2,pars,fvec,iflag,&
-                   xd,yd,lower,upper)
+subroutine tgcfunc1(nd,n2,pars,fvec,iflag,&
+                    xd,yd,lower,upper)
 !---------------------------------------------------
-! Subroutine tgcfunc() is used for calculating
+! Subroutine tgcfunc1() is used for calculating
 ! the residual vector of a optimized TL glow curve.
 !---------------------------------------------------
 !        nd:: input, integer, number of data points.
@@ -162,7 +164,7 @@ subroutine tgcfunc(nd,n2,pars,fvec,iflag,&
 ! lower(n2):: input, real values, lower bounds.
 ! upper(n2):: input, real vlaues, upper bounds.
 !----------------------------------------------------
-! Author:: Peng Jun, 2015.05.26, revised in 2015.09.12.
+! Author:: Peng Jun, 2015.09.11.
 !----------------------------------------------------
 ! Dependence:: NO.
 !----------------------------------------------------
@@ -172,12 +174,9 @@ subroutine tgcfunc(nd,n2,pars,fvec,iflag,&
     real   (kind=8):: pars(n2), lower(n2), upper(n2),&
                       fvec(nd), xd(nd), yd(nd)                 
     ! Local variables.
-    real   (kind=8):: xx(39), maxi, engy, maxt, &
-                      xa, fxa, xb(nd), fxb(nd)
-    real   (kind=8), parameter:: kbz=8.617385e-5, a0=0.267773734, &
-                 a1=8.6347608925, a2=18.059016973, a3=8.5733287401, &
-                 b0=3.9584969228, b1=21.0996530827, b2=25.6329561486, &
-                 b3=9.5733223454
+    real   (kind=8), parameter:: kbz=8.617385e-5
+    real   (kind=8):: xx(52), maxi, engy, maxt, &
+                      bv, xa(nd), xb, expv(nd)
     integer(kind=4):: i
     !
     ! Bound constraints.
@@ -193,20 +192,18 @@ subroutine tgcfunc(nd,n2,pars,fvec,iflag,&
     xx(1:n2) = pars(1:n2)
     !
     fvec = 0.0
-    do i=1, n2/3
+    do i=1, n2/4
         maxi = xx(i)
-        engy = xx(i+n2/3)
-        maxt = xx(i+2*n2/3)
-        xa = engy/kbz/maxt
-        xb = engy/kbz/xd
-        fxa = 1.0-(a0+a1*xa+a2*xa**2+a3*xa**3+xa**4)/&
-                  (b0+b1*xa+b2*xa**2+b3*xa**3+xa**4)
-        fxb = 1.0-(a0+a1*xb+a2*xb**2+a3*xb**3+xb**4)/&
-                  (b0+b1*xb+b2*xb**2+b3*xb**3+xb**4)
-        fvec = fvec + maxi*exp(xa-xb)*&
-        exp(xa*(fxa-xd/maxt*fxb*exp(xa-xb)))
+        engy = xx(i+n2/4)
+        maxt = xx(i+2*n2/4)
+        bv = xx(i+3*n2/4)
+        xa = 2.0*kbz*xd/engy
+        xb = 2.0*kbz*maxt/engy
+        expv = exp(engy/kbz/xd*(xd-maxt)/maxt)
+        fvec = fvec + maxi*(bv**(bv/(bv-1.0)))*expv*&
+        ((bv-1.0)*(1.0-xa)*((xd/maxt)**2)*expv+1.0+(bv-1.0)*xb)**(-bv/(bv-1.0))
     end do
     fvec = sqrt(abs(fvec-yd))
     return
     !
-end subroutine tgcfunc
+end subroutine tgcfunc1

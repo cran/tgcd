@@ -1,21 +1,30 @@
 Package: tgcd
 Type: Package
 Title: Thermoluminescence Glow Curve Deconvolution
-Version: 1.5
-Date: 2015-08-05
-Author: Jun Peng [aut, cre], Jorge More [ctb], Burton Garbow [ctb], Kenneth Hillstrom [ctb], John Burkardt [ctb]
+Version: 1.7
+Date: 2015-09-16
+Author: Jun Peng [aut, cre], Jorge More [ctb], Burton Garbow [ctb], Kenneth Hillstrom [ctb], John Burkardt [ctb], Linda R. Petzold [ctb], Alan C. Hindmarsh [ctb], R. Woodrow Setzer [ctb]
 Maintainer: Jun Peng <pengjun10@mails.ucas.ac.cn>
 Authors@R: c(person("Jun", "Peng", role = c("aut","cre"), email="pengjun10@mails.ucas.ac.cn"),
   person("Jorge", "More", role = "ctb"), 
   person("Burton", "Garbow", role = "ctb"), 
   person("Kenneth", "Hillstrom", role = "ctb"),
-  person("John", "Burkardt", role = "ctb"))
-Description: Deconvolving first-order thermoluminescence glow curves using a modified Levenberg-Marquardt algorithm. It provides the possibility of setting constraints or fixing any of parameters. It offers an interactive way to initialize parameters by clicking with a mouse on a plot at positions where peak maxima should be located. Glow peaks can be simulated according to the Randall-Wilkins model.
+  person("John", "Burkardt", role = "ctb"),
+  person("Linda R.", "Petzold", role = "ctb"),
+  person("Alan C.", "Hindmarsh", role = "ctb"),
+  person("R. Woodrow", "Setzer", role = "ctb"))
+Description: Deconvolving first-order and general-order thermoluminescence glow 
+        curves using a modified Levenberg-Marquardt algorithm. It provides the 
+        possibility of setting constraints or fixing any of parameters. It offers 
+        an interactive way to initialize parameters by clicking with a mouse on a 
+        plot at positions where peak maxima should be located. The optimal estimate 
+        is obtained by "Try-and-error". It also provides routines for simulating 
+        first-, second-, and general-order glow peaks (or glow curves).
 License: GPL-2 | GPL-3
 Depends: R (>= 3.0.1)
 Imports: graphics, stats, utils
 URL: http://CRAN.R-project.org/package=tgcd
-Packaged: 2015-08-05 09:40:32 UTC; pengjun
+Packaged: 2015-09-16 08:22:55 UTC; pengjun
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2015-08-05 13:18:46
+Date/Publication: 2015-09-16 12:47:12

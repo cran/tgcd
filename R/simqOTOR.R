@@ -1,48 +1,24 @@
 ###
-simPeak <- 
-function(temps, n0, Nn=NULL, bv=NULL, ff,
-         ae, hr, typ=c("f", "s", "g"), 
-         outfile=NULL,  plot=TRUE) {
-    UseMethod("simPeak")
+simqOTOR <- 
+function(temps, n0, Nn, Ah, An, ff, ae,
+         hr, outfile=NULL, plot=TRUE) {
+    UseMethod("simqOTOR")
 } #
-### 2015.06.18, revised in 2015.09.14.
-simPeak.default <- 
-function(temps, n0, Nn=NULL, bv=NULL, ff, 
-         ae, hr, typ=c("f", "s", "g"), 
-         outfile=NULL,  plot=TRUE) {
+### 2015.06.18, revised in 2015.09.12.
+simqOTOR.default <- 
+function(temps, n0, Nn, Ah, An, ff, ae,
+         hr, outfile=NULL, plot=TRUE) {
     ### Stop if not.
     stopifnot(is.numeric(temps), all(temps>0),
               length(n0)==1L, n0>0,
-              is.null(Nn) || is.numeric(Nn),
-              is.null(bv) || is.numeric(bv),
+              length(Nn)==1L, is.numeric(Nn), Nn>0, Nn>=n0,
+              length(Ah)==1L, is.numeric(Ah), Ah>0,
+              length(An)==1L, is.numeric(An), An>0,
               length(ff)==1L, is.numeric(ff), ff>0,
               length(ae)==1L, is.numeric(ae), ae>0,
               length(hr)==1L, is.numeric(hr), hr>0,
-              length(typ) %in% seq(3L), all(typ %in% c("f", "s", "g")),
               is.null(outfile) || is.character(outfile),
               length(plot)==1L, is.logical(plot))
-    ###
-    if (typ[1L]=="f") {
-        Nn <- bv <- 0
-    } # end if.
-    if (typ[1L]=="s") {
-        bv <- 0
-    } # end if.
-    ###
-    if (typ[1L] %in% c("s", "g")) {
-        if (is.null(Nn))  stop("Error: Nn should be provided!")
-        if (!is.null(Nn)) {
-            if (length(Nn)!=1L) stop("Error: Nn should be an one-element vector!")
-            if (Nn<n0) stop("Error: Nn should be equal to or larger than n0!")
-        } # end if.
-    } # end if.
-    if (typ[1L]=="g") { 
-        if (is.null(bv)) stop("Error: bv should be provided!")
-        if (!is.null(bv)) {
-            if (length(bv)!=1L) stop("Error: bv should be an one-element vector!")
-            if (bv<=1.0 || bv >=2.0) stop("Error: bv should lie in the space (1, 2)!")
-        } # end if.
-    } # end if.
     ###
     if (!is.null(outfile)) {
         if (length(outfile)!=1L) 
@@ -52,33 +28,20 @@ function(temps, n0, Nn=NULL, bv=NULL, ff,
     nt <- length(temps)
     vecy <- double(nt)
     info <- -100
-    typ1 <- if(typ[1L]=="f") {
-        1L
-    } else if (typ[1L]=="s") {
-        2L
-    } else if (typ[1L]=="g") {
-        3L
-    } # end if.
     ###
-    res <- .Fortran("simPeak", as.integer(nt), as.double(temps),
-                    as.double(n0), as.double(Nn), as.double (bv),
-                    as.integer(typ1), as.double(ff), as.double(ae), 
+    res <- .Fortran("qeOTOR", as.integer(nt), as.double(temps),
+                    as.double(n0), as.double(Nn), as.double(Ah), 
+                    as.double(An), as.double(ff), as.double(ae),
                     as.double(hr), vecy=as.double(vecy), 
                     info=as.integer(info), PACKAGE="tgcd")
     if(res$info!=2L) {
         stop("Error: fail in solving ordinary equation!")
     } # end if.
     ###
-    ###print(res$vecy)
     kbz = 8.617385e-05
     tout <- temps
-    if (typ[1L]=="f")  {
-        yout <- ff*abs(res$vecy)*exp(-ae/kbz/temps)/hr
-    } else if (typ[1L]=="s")  {
-        yout <- ff*(res$vecy)^2L*exp(-ae/kbz/temps)/Nn/hr
-    } else if (typ[1L]=="g")  {
-        yout <- ff*(abs(res$vecy))^bv*exp(-ae/kbz/temps)/Nn/hr
-    } # end if.
+    yout <- ff*(res$vecy)^2L*exp(-ae/kbz/temps)*Ah/
+            (Ah*res$vecy+An*(Nn-res$vecy))/hr
     ###
     calShape <- function(x, y)  {
         ny <- length(y)
@@ -115,7 +78,9 @@ function(temps, n0, Nn=NULL, bv=NULL, ff,
                    format(n0,digits=3,scientific=TRUE)," (1/cm^3)",sep=""),
                    paste("Activation Energy: ",round(ae,2L)," (eV)",sep=""),
                    paste("Frequency Factor: ",format(ff,digits=3,scientific=TRUE)," (1/s)",sep=""), 
-                   paste("Heating Rate: ",round(hr,2L)," (K/s)",sep="")), 
+                   paste("Heating Rate: ",round(hr,2L)," (K/s)",sep=""), 
+                   paste("Recombine Probability: ",format(Ah,digits=3,scientific=TRUE)," (cm^3/s)",sep=""),
+                   paste("Retrap Probability: ",format(An,digits=3,scientific=TRUE)," (cm^3/s)",sep="")),
                    yjust=2, ncol=1, cex=2*par("cex"), bty="n",  pt.bg="white")
         } else {
             legend(ifelse(tout[which.max(yout)] > XaxisCentral, "topleft", 
@@ -123,8 +88,10 @@ function(temps, n0, Nn=NULL, bv=NULL, ff,
                    format(n0,digits=3,scientific=TRUE)," (1/cm^3)",sep=""),
                    paste("Activation Energy: ",round(ae,2L)," (eV)",sep=""),
                    paste("Frequency Factor: ",format(ff,digits=3,scientific=TRUE)," (1/s)",sep=""), 
-                   paste("Heating Rate: ",round(hr,2L)," (K/s)",sep=""),
-                   paste("Symmetry Factor: ",round(sp["sf"],2L),sep="")), 
+                   paste("Heating Rate: ",round(hr,2L)," (K/s)",sep=""), 
+                   paste("Recombine Probability: ",format(Ah,digits=3,scientific=TRUE)," (cm^3/s)",sep=""),
+                   paste("Retrap Probability: ",format(An,digits=3,scientific=TRUE)," (cm^3/s)",sep=""),
+                   paste("Symmetry Factor: ",round(sp["sf"],2L),sep="")),
                    yjust=2, ncol=1, cex=2*par("cex"), bty="n",  pt.bg="white")
         } # end if.
         ###
@@ -145,5 +112,5 @@ function(temps, n0, Nn=NULL, bv=NULL, ff,
         write.csv(PeakSig, file=paste(outfile, ".csv", sep=""))
     } # end if.
     return(invisible(list("temps"=tout, "tl"=yout, "n"=res$vecy, "sp"=sp)))
-} # end function simPeak.
+} # end function simqOTOR.
 ###

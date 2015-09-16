@@ -20,7 +20,7 @@ A list that contains two thermoluminescence glow curves:
 }
 
 \details{
-\bold{Refglow} contains two thermoluminescence glow curves (Refglow002 and Refglow009) from the GLOCANIN project.\cr
+\bold{Refglow} contains two thermoluminescence glow curves (Refglow002 and Refglow009) from the GLOCANIN project.
 The author is grateful to Adrie J.J. Bos for providing the reference glow curves of the GLOCANIN project to test function \link{tgcd}.
 }
 
