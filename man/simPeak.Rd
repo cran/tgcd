@@ -5,7 +5,7 @@
 Thermoluminescence glow peak simulation
 }
 \description{
-Simulating first-, second-, or general-order glow peaks.
+Simulating first-order, second-order, or general-order glow peaks.
 }
 \usage{
 simPeak(temps, n0, Nn = NULL, bv = NULL, ff, 
@@ -88,11 +88,16 @@ Soetaert K, Petzoldt T, Setzer RW, 2010. Solving Differential Equations in R: Pa
    ### Effect of initial electron trap concentration (n0) 
    ### on second-order glow peaks.
     temps <- seq(400, 600, by=0.5)
-    peak1 <- simPeak(temps, n0=0.2e10, Nn=1e10, ff=1e19, ae=2.0, hr=1, typ="s")
-    peak2 <- simPeak(temps, n0=0.4e10, Nn=1e10, ff=1e19, ae=2.0, hr=1, typ="s")
-    peak3 <- simPeak(temps, n0=0.6e10, Nn=1e10, ff=1e19, ae=2.0, hr=1, typ="s")
-    peak4 <- simPeak(temps, n0=0.8e10, Nn=1e10, ff=1e19, ae=2.0, hr=1, typ="s")
-    peak5 <- simPeak(temps, n0=1.0e10, Nn=1e10, ff=1e19, ae=2.0, hr=1, typ="s")
+    peak1 <- simPeak(temps, n0=0.2e10, Nn=1e10, 
+      ff=1e19, ae=2.0, hr=1, typ="s")
+    peak2 <- simPeak(temps, n0=0.4e10, Nn=1e10, 
+      ff=1e19, ae=2.0, hr=1, typ="s")
+    peak3 <- simPeak(temps, n0=0.6e10, Nn=1e10, 
+      ff=1e19, ae=2.0, hr=1, typ="s")
+    peak4 <- simPeak(temps, n0=0.8e10, Nn=1e10, 
+      ff=1e19, ae=2.0, hr=1, typ="s")
+    peak5 <- simPeak(temps, n0=1.0e10, Nn=1e10, 
+      ff=1e19, ae=2.0, hr=1, typ="s")
     peaks <- cbind(peak1$tl, peak2$tl, peak3$tl, peak4$tl, peak5$tl)
     matplot(temps, peaks, type="l", lwd=2, lty="solid", 
       xlab="Temperature (K)", ylab="TL intensity (counts)")

@@ -73,11 +73,11 @@ function(temps, n0, Nn=NULL, bv=NULL, ff,
     kbz = 8.617385e-05
     tout <- temps
     if (typ[1L]=="f")  {
-        yout <- ff*abs(res$vecy)*exp(-ae/kbz/temps)/hr
+        yout <- ff*(res$vecy)*exp(-ae/kbz/temps)/hr
     } else if (typ[1L]=="s")  {
         yout <- ff*(res$vecy)^2L*exp(-ae/kbz/temps)/Nn/hr
     } else if (typ[1L]=="g")  {
-        yout <- ff*(abs(res$vecy))^bv*exp(-ae/kbz/temps)/Nn/hr
+        yout <- ff*(res$vecy)^bv*exp(-ae/kbz/temps)/Nn/hr
     } # end if.
     ###
     calShape <- function(x, y)  {
