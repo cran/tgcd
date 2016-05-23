@@ -4,7 +4,7 @@ function(temps, n0, Nn, Ah, An, ff, ae,
          hr, outfile=NULL, plot=TRUE) {
     UseMethod("simqOTOR")
 } #
-### 2015.06.18, revised in 2015.09.12.
+### 2016.05.22.
 simqOTOR.default <- 
 function(temps, n0, Nn, Ah, An, ff, ae,
          hr, outfile=NULL, plot=TRUE) {
@@ -61,44 +61,50 @@ function(temps, n0, Nn, Ah, An, ff, ae,
     sp <- try(calShape(tout, yout), silent=TRUE)
     ###
     if (plot==TRUE)  {
-        layout(cbind(c(1L, 1L, 1L, 2L), 
-                     c(1L, 1L, 1L, 2L)))
-        par(mar = c(0, 5.1, 3.1, 1.1))
+        layout(cbind(c(rep(1,13), 2, rep(3,6)), 
+                     c(rep(1,13), 2, rep(3,6))))
         ###
+        ### The first plot.
+        par(mar=c(0,5.1,3.1,1.1))
         plot(tout, yout, type="l", lwd=5, col="skyblue3",
-             ylab="TL Intensity", las=0, lab=c(7,7,9), 
-             xaxt="n", xaxs="r", yaxs="r", cex.lab=2*par("cex"))
+             ylab="TL Intensity (counts)", las=0, lab=c(7,7,9), 
+             xaxt="n", xaxs="r", yaxs="r", cex.lab=2.0, cex.axis=1.5)
         box(lwd=2L)
         ###
         XaxisCentral <- median(axTicks(side=1L))
         ###
         if (class(sp)=="try-error")  {
             legend(ifelse(tout[which.max(yout)] > XaxisCentral, "topleft", 
-                   "topright"), legend=c(paste("Initial Concentration: ",
+                   "topright"), legend=c(paste("n0: ",
                    format(n0,digits=3,scientific=TRUE)," (1/cm^3)",sep=""),
-                   paste("Activation Energy: ",round(ae,2L)," (eV)",sep=""),
-                   paste("Frequency Factor: ",format(ff,digits=3,scientific=TRUE)," (1/s)",sep=""), 
-                   paste("Heating Rate: ",round(hr,2L)," (K/s)",sep=""), 
-                   paste("Recombine Probability: ",format(Ah,digits=3,scientific=TRUE)," (cm^3/s)",sep=""),
-                   paste("Retrap Probability: ",format(An,digits=3,scientific=TRUE)," (cm^3/s)",sep="")),
-                   yjust=2, ncol=1, cex=2*par("cex"), bty="n",  pt.bg="white")
+                   paste("ae: ",round(ae,2L)," (eV)",sep=""),
+                   paste("ff: ",format(ff,digits=3,scientific=TRUE)," (1/s)",sep=""), 
+                   paste("hr: ",round(hr,2L)," (K/s)",sep=""), 
+                   paste("Ah: ",format(Ah,digits=3,scientific=TRUE)," (cm^3/s)",sep=""),
+                   paste("An: ",format(An,digits=3,scientific=TRUE)," (cm^3/s)",sep="")),
+                   yjust=2, ncol=1, cex=2.0, bty="n", pt.bg="white")
         } else {
             legend(ifelse(tout[which.max(yout)] > XaxisCentral, "topleft", 
-                   "topright"), legend=c(paste("Initial Concentration: ",
+                   "topright"), legend=c(paste("n0: ",
                    format(n0,digits=3,scientific=TRUE)," (1/cm^3)",sep=""),
-                   paste("Activation Energy: ",round(ae,2L)," (eV)",sep=""),
-                   paste("Frequency Factor: ",format(ff,digits=3,scientific=TRUE)," (1/s)",sep=""), 
-                   paste("Heating Rate: ",round(hr,2L)," (K/s)",sep=""), 
-                   paste("Recombine Probability: ",format(Ah,digits=3,scientific=TRUE)," (cm^3/s)",sep=""),
-                   paste("Retrap Probability: ",format(An,digits=3,scientific=TRUE)," (cm^3/s)",sep=""),
-                   paste("Symmetry Factor: ",round(sp["sf"],2L),sep="")),
-                   yjust=2, ncol=1, cex=2*par("cex"), bty="n",  pt.bg="white")
+                   paste("ae: ",round(ae,2L)," (eV)",sep=""),
+                   paste("ff: ",format(ff,digits=3,scientific=TRUE)," (1/s)",sep=""), 
+                   paste("hr: ",round(hr,2L)," (K/s)",sep=""), 
+                   paste("Ah: ",format(Ah,digits=3,scientific=TRUE)," (cm^3/s)",sep=""),
+                   paste("An: ",format(An,digits=3,scientific=TRUE)," (cm^3/s)",sep=""),
+                   paste("sf: ",round(sp["sf"],2L),sep="")),
+                   yjust=2, ncol=1, cex=2.0, bty="n", pt.bg="white")
         } # end if.
         ###
+        ### The second plot.
+        par(mar=c(0,5.1,0,1.1))
+        plot(c(0,0), type="n", xaxt="n", yaxt="n", xlab="n", ylab="")
+        ###
+        ### The third plot.
         par(mar = c(5.1, 5.1, 0, 1.1))
         plot(tout, res$vecy, type="l", xlab = "Temperature(K)", 
              ylab="Concentration", las=0, lab=c(7,7,9), xaxs="r", yaxs="i",
-             ylim=c(-0.1*n0, 1.1*n0), col="grey", lwd=5, cex.lab=2*par("cex"))
+             ylim=c(-0.1*n0, 1.1*n0), col="grey", lwd=5, cex.lab=2.0, cex.axis=1.5)
         box(lwd=2L) 
         par(mar=c(5,4,4,2)+0.1)
         layout(1L)
