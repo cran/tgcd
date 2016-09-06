@@ -38,7 +38,7 @@ be written to a file named \code{"outfile"} in \code{CSV} format and saved to th
 }
 
 \details{
-Function \emph{simqOTOR} simulates a synthetic glow peak according to the OTOR model using the quasi-equilibrium 
+Function \link{simqOTOR} simulates a synthetic glow peak according to the OTOR model using the quasi-equilibrium 
 approximation. This function may be used to simulating glow peaks of first-, second-, and general-order, depending 
 on the given kinetic parameters. The approximate equation of the OTOR model derived using the quasi-equilibrium 
 approximation can be described by (Pagonis et al., 2006):
@@ -75,22 +75,23 @@ Soetaert K, Petzoldt T, Setzer RW, 2010. Solving Differential Equations in R: Pa
 }
 
 \examples{
+
     # Synthesizing a glow curve consisting of five glow peaks.
-    temps <- seq(330, 730, by=0.5)
-    peak1 <- simqOTOR(temps, n0=0.7e10, Nn=1e10, Ah=1e-3, An=1e-7,
-      ff=1e14, ae=1.5, hr=1, outfile = NULL, plot = TRUE)
-    peak2 <- simqOTOR(temps, n0=0.5e10, Nn=1e10, Ah=1e-7, An=1e-7,
-      ff=1e17, ae=1.9, hr=1, outfile = NULL, plot = TRUE)
-    peak3 <- simqOTOR(temps, n0=0.2e10, Nn=1e10, Ah=1e-5, An=1e-7,
-      ff=1e15, ae=1.45, hr=1, outfile = NULL, plot = TRUE)
-    peak4 <- simqOTOR(temps, n0=0.2e10, Nn=1e10, Ah=1e-5, An=1e-7,
-      ff=1e9, ae=0.85, hr=1, outfile = NULL, plot = TRUE)
-    peak5 <- simqOTOR(temps, n0=0.3e10, Nn=1e10, Ah=1e-7, An=1e-7,
-      ff=1e11, ae=1.4, hr=1, outfile = NULL, plot = TRUE)
-    peaks <- cbind(peak1$tl, peak2$tl, peak3$tl, peak4$tl, peak5$tl, 
-               peak1$tl+peak2$tl+peak3$tl+peak4$tl+peak5$tl)
-    matplot(temps, y=peaks, type="l", lwd=2, lty="solid", 
-      xlab="Temperature (K)", ylab="TL intensity (counts)")
+     temps <- seq(330, 730, by=0.5)
+     peak1 <- simqOTOR(temps, n0=0.7e10, Nn=1e10, Ah=1e-3, An=1e-7,
+       ff=1e14, ae=1.5, hr=1, outfile = NULL, plot = TRUE)
+     peak2 <- simqOTOR(temps, n0=0.5e10, Nn=1e10, Ah=1e-7, An=1e-7,
+       ff=1e17, ae=1.9, hr=1, outfile = NULL, plot = TRUE)
+     peak3 <- simqOTOR(temps, n0=0.2e10, Nn=1e10, Ah=1e-5, An=1e-7,
+       ff=1e15, ae=1.45, hr=1, outfile = NULL, plot = TRUE)
+     peak4 <- simqOTOR(temps, n0=0.2e10, Nn=1e10, Ah=1e-5, An=1e-7,
+       ff=1e9, ae=0.85, hr=1, outfile = NULL, plot = TRUE)
+     peak5 <- simqOTOR(temps, n0=0.3e10, Nn=1e10, Ah=1e-7, An=1e-7,
+       ff=1e11, ae=1.4, hr=1, outfile = NULL, plot = TRUE)
+     peaks <- cbind(peak1$tl, peak2$tl, peak3$tl, peak4$tl, peak5$tl, 
+       peak1$tl+peak2$tl+peak3$tl+peak4$tl+peak5$tl)
+     matplot(temps, y=peaks, type="l", lwd=2, lty="solid", 
+       xlab="Temperature (K)", ylab="TL intensity (counts)")
 }
 
 \keyword{package tgcd}

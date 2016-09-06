@@ -40,7 +40,7 @@ be written to a file named \code{"outfile"} in \code{CSV} format and saved to th
 }
 
 \details{
-Function \emph{simPeak} simulates glow peaks of various orders. The first-, second-, and general-order glow peak 
+Function \link{simPeak} simulates glow peaks of various orders. The first-, second-, and general-order glow peak 
 can be simulated using the following three ordinary equations, respectively (Pagonis et al., 2006):
 
 \eqn{\frac{dn}{dT}=-n*S*e^{-E/(k*T)}/hr}
@@ -85,8 +85,9 @@ Soetaert K, Petzoldt T, Setzer RW, 2010. Solving Differential Equations in R: Pa
 }
 
 \examples{
-   ### Effect of initial electron trap concentration (n0) 
-   ### on second-order glow peaks.
+  
+   # Simulate second-order glow peaks with various 
+   # initial electron trap concentration (n0).
     temps <- seq(400, 600, by=0.5)
     peak1 <- simPeak(temps, n0=0.2e10, Nn=1e10, 
       ff=1e19, ae=2.0, hr=1, typ="s")

@@ -1,0 +1,11 @@
+citHeader("To cite package tgcd in publications use:")
+
+citEntry(entry="Article",
+         title = "tgcd: An R package for analyzing thermoluminescence glow curves",
+         author = personList(as.person("Peng J"),
+         as.person("Dong ZB"),
+         as.person("Han FQ")),
+	 journal = "SoftwareX",
+         year = 2016,
+         DOI = "10.1016/j.softx.2016.06.001",
+         textVersion = "Peng J, Dong ZB, Han FQ, 2016. tgcd: An R package for analyzing thermoluminescence glow curves. SoftwareX, in press.")

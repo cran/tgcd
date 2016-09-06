@@ -5,7 +5,7 @@
 Thermoluminescence glow curve deconvolution (TGCD)
 }
 \description{
-Thermoluminescence glow curve deconvolution according to the general-order empirical expression or the semi-analytical expression derived from the one trap-one recombination (OTOR) model based on the Lambert's W function.
+Thermoluminescence glow curve deconvolution according to the general-order empirical expression or the semi-analytical expression derived from the one trap-one recombination (OTOR) model.
 }
 \usage{
 tgcd(Sigdata, npeak, inis = NULL, mwt = 90, 
@@ -31,7 +31,7 @@ the appearance of strongly overlapping peaks. A conservative \code{mdt} is adopt
   \item{nstart}{\link{integer}(with default): number of trials, if \code{nstart>1}, a "try-and-error" protocol will be performed, the upper limit for
 \code{nstart} is set equal to 10000}
 
-  \item{model}{\link{character}(with default): \code{"g"} means fitting a general-order model, \code{"lw"} means fitting the Lambert W-function, default \code{model="g"}}
+  \item{model}{\link{character}(with default): \code{"g"} means fitting a general-order model, \code{"lw"} means fitting the Lambert W (Wright Omega) function, default \code{model="g"}}
 
   \item{elim}{\link{vector}(with default): lower and upper limits for the activation energy, default \code{elim=c(0.5, 5)} }
 
@@ -46,10 +46,10 @@ saved to the current work directory}
 }
 
 \details{
-Function \emph{tgcd} is used for deconvolving thermoluminescence glow curves according to the general-order empirical expression 
+Function \link{tgcd} is used for deconvolving thermoluminescence glow curves according to the general-order empirical expression 
 (Kitis et al., 1998; Pagonis et al., 2006) or the semi-analytical expression derived from the one trap-one recombination (OTOR) 
-model based on the Lambert's W function (Kitis and Vlachos, 2013; Sadek et al., 2015; Kitis et al., 2016) using the Levenberg-Marquardt 
-algorithm (plus supports for constraining and fixing parameters).
+model (Kitis and Vlachos, 2013; Singh and Gartia, 2013; Singh and Gartia, 2014; Singh and Gartia, 2015; Sadek et al., 2015; Kitis et al., 2016) 
+using the Levenberg-Marquardt algorithm (plus supports for constraining and fixing parameters).
 
 The general-order empirical expression for a glow peak is:
 
@@ -64,7 +64,8 @@ where \code{b} is the kinetic parameter (lies between 1 and 2), \code{I} is the 
 \code{Tm} the temperature at maximum thermoluminescence intensity in K, and \code{Im} the maximum intensity.
 The four parameters for this model are: \code{Im}, \code{E}, \code{Tm}, and \code{b}.\cr
 
-The semi-analytical expression derived from the one trap-one recombination (OTOR) model based on the Lambert's W function is:
+The semi-analytical expression derived from the one trap-one recombination (OTOR) model is (with the assumption of An<Am, 
+where An and Am are the re-trapping and recombination probability coefficients, respectively):
 
 \code{I(T)=Im*exp(-E/(k*T)*(Tm-T)/Tm)*(W(Zm)+W(Zm)^2)/(W(Z)+W(Z)^2)}\cr
 \code{Zm=R/(1-R)-log((1-R)/R)+E*exp(E/(k*Tm))/(k*Tm^2*(1-1.05*R^1.26))*F(Tm,E)}\cr
@@ -77,7 +78,9 @@ where \code{W(x)} is the wright Omega function for variable x, \code{Ei(x)} is t
 \code{T} the temperature in K with constant heating rate in K/s, \code{Tm} the temperature at maximum thermoluminescence intensity in K, 
 and \code{Im} the maximum intensity. The four parameters for this model are: \code{Im}, \code{E}, \code{Tm}, and \code{R}.
 The Fortran 90 subroutine used for evaluating the Wright Omega function is transformed from the Matlab code 
-provided by Andrew Horchler available at \url{https://github.com/horchler/wrightOmegaq}.\cr
+provided by Andrew Horchler available at \url{https://github.com/horchler/wrightOmegaq}. Here the Wright Omega 
+function suggested by Singh and Gartia (2013, 2014, 2015) was used instead of the Lambert's W function proposed 
+by Kitis and Vlachos (2013) to avoid unnecessary overflow.\cr
 
 The procedure minimizes the objective:
 
@@ -88,11 +91,10 @@ and \eqn{n} indicates the number of data points.
 
 Starting parameters (\code{inis}) can be specified by the user through argument \code{inis} or by clicking with a mouse on 
 the plot of the thermoluminescence glow curve showing peak maxima if \code{inis=NULL}.The Levenberg-Marquardt algorithm 
-(More, 1978) (\emph{minpack}: Original Fortran 77 version by Jorge More, Burton Garbow, Kenneth Hillstrom. Fortran 90 version 
-by John Burkardt freely available at \url{http://people.sc.fsu.edu/~jburkardt/f_src/minpack/}) was modified so as to supports 
-constraints and fixes of parameters. If argument \code{nstart>1}, a "try-and-error" protocol with starting values generated 
-uniformly around the given starting values \code{inis} will be performed repeatedly to search the optimal parameters that 
-give a minimum Figure Of Merit (FOM) value.
+(More, 1978) (\emph{minpack}: \url{http://netlib.org/minpack/}, original Fortran 77 version by Jorge More, Burton Garbow, Kenneth Hillstrom. 
+Fortran 90 version by John Burkardt was modified so as to supports constraints and fixes of parameters. If argument \code{nstart>1}, 
+a "try-and-error" protocol with starting values generated uniformly around the given starting values \code{inis} will be performed 
+repeatedly to search the optimal parameters that give a minimum Figure Of Merit (FOM) value.
 
 Parameters can be interactively constrained and fixed by modifying the following elements in a automatically 
 generated \bold{Dialog Table} if \code{inis=NULL}:\cr 
@@ -123,6 +125,12 @@ Pagonis V, Kitis G, Furetta C, 2006. Numerical and practical exercises in thermo
 
 Sadek AM, Eissa HM, Basha AM, Carinou E, Askounis P, Kitis G, 2015. The deconvolution of thermoluminescence glow-curves using general expressions derived from the one trap-one recombination (OTOR) level
 model. Applied Radiation and Isotopes, 95: 214-221.
+
+Singh LL, Gartia RK, 2013. Theoretical derivation of a simplified form of the OTOR/GOT differential equation. Radiation Measurements, 59: 160-164.
+
+Singh LL, Gartia RK, 2014. Glow-curve deconvolution of thermoluminescence curves in the simplified OTOR equation using the Hybrid Genetic Algorithm. Nuclear Instruments and Methods in Physics Research B, 319: 39-43.
+
+Singh LL, Gartia RK, 2015. Derivation of a simplified OSL OTOR equation using Wright Omega function and its application. Nuclear Instruments and Methods in Physics Research B, 346: 45-52.
 
 \bold{Further reading} 
 
@@ -155,7 +163,8 @@ by subtracting from measured data before analysis.
 # Load the data.
   data(Refglow)
 
-# Deconvolve Refglow002 with 4 peaks using the Lambert W-function.
+# Deconvolve Refglow002 with 4 peaks using the semi-analytical expression 
+# derived from the one trap-one recombination (OTOR) model.
   startingPars <- 
   cbind(c(400, 550, 850, 1600), # Im
         c(1.4, 1.5, 1.6, 2),    # E
