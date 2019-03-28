@@ -43,20 +43,20 @@ be written to a file named \code{"outfile"} in \code{CSV} format and saved to th
 Function \link{simPeak} simulates glow peaks of various orders. The first-, second-, and general-order glow peak 
 can be simulated using the following three ordinary equations, respectively (Pagonis et al., 2006):
 
-\eqn{\frac{dn}{dT}=-n*S*e^{-E/(k*T)}/hr}
+\eqn{\frac{d_n}{d_T}=\frac{-nSexp(-\frac{E}{kT})}{\beta}}
 
-\eqn{\frac{dn}{dT}=-n^{2}*S*e^{-E/(k*T)}/(Nn*hr)}
+\eqn{\frac{d_n}{d_T}=\frac{-n^{2}Sexp(-\frac{E}{kT})}{N_n\beta}}
 
-\eqn{\frac{dn}{dT}=-n^{bv}*S*e^{-E/(k*T)}/(Nn*hr)}
+\eqn{\frac{d_n}{d_T}=\frac{-n^{b}Sexp(-\frac{E}{kT})}{N_n\beta}}
 
-where \eqn{n} is the concentration of trapped electrons, \eqn{\frac{dn}{dT}} the rate of change of the concentration 
+where \eqn{n} is the concentration of trapped electrons, \eqn{\frac{d_n}{d_T}} the rate of change of the concentration 
 of trapped electrons, \eqn{S} the frequency factor, \eqn{E} the activation energy, \eqn{T} the absolute temperature, 
-\eqn{k} the Boltzmann constant, \eqn{Nn} the total concentration of the traps in the crystal, \eqn{bv} the b value 
-(kinetic order), and \eqn{hr} the linear heating rate.
+\eqn{k} the Boltzmann constant, \eqn{N_n} the total concentration of the traps in the crystal, \eqn{b} the b value 
+(kinetic order), and \eqn{\beta} the linear heating rate.
 
 The ordinary equation is solved by the Fortran 77 subroutine \emph{lsoda} (original version written by Linda R. Petzold and 
 Alan C. Hindmarsh available at Netlib: \url{http://www.netlib.org/odepack/}, modified version by R. Woodrow Setzer from the R package 
-\emph{deSolve} (Soetaert et al., 2010) available at CRAN: \url{http://CRAN.R-project.org/package=deSolve}).
+\emph{deSolve} (Soetaert et al., 2010) available at CRAN: \url{https://CRAN.R-project.org/package=deSolve}).
 }
 
 \value{

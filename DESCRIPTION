@@ -1,42 +1,43 @@
 Package: tgcd
 Type: Package
 Title: Thermoluminescence Glow Curve Deconvolution
-Version: 2.0
-Date: 2016-09-06
-Author: Jun Peng [aut, cre], 
-  Jorge More [ctb], 
-  Burton Garbow [ctb], 
-  Kenneth Hillstrom [ctb], 
-  John Burkardt [ctb], 
-  Linda R. Petzold [ctb], 
-  Alan C. Hindmarsh [ctb], 
-  R. Woodrow Setzer [ctb], 
-  Andrew Horchler [ctb]
+Version: 2.1
+Date: 2019-03-29
+Author: Jun Peng [aut, cre],
+  John Burkardt [ctb],
+  Jorge More [ctb],
+  Burton Garbow [ctb],
+  Kenneth Hillstrom [ctb],
+  Linda R. Petzold [ctb],
+  Alan C. Hindmarsh [ctb],
+  R. Woodrow Setzer [ctb],
+  Andrew Horchler [ctb],
+  William Cody [ctb]
 Maintainer: Jun Peng <pengjun10@mails.ucas.ac.cn>
 Authors@R: c(
     person("Jun", "Peng", role = c("aut","cre"), email="pengjun10@mails.ucas.ac.cn"),
+    person("John", "Burkardt", role = "ctb"),
     person("Jorge", "More", role = "ctb"), 
     person("Burton", "Garbow", role = "ctb"), 
     person("Kenneth", "Hillstrom", role = "ctb"),
-    person("John", "Burkardt", role = "ctb"),
     person("Linda R.", "Petzold", role = "ctb"),
     person("Alan C.", "Hindmarsh", role = "ctb"),
     person("R. Woodrow", "Setzer", role = "ctb"),
-    person("Andrew", "Horchler", role = "ctb")
+    person("Andrew", "Horchler", role = "ctb"),
+    person("William", "Cody", role = "ctb")
     )
-Description: Deconvolving thermoluminescence glow curves according to the general-order 
-        empirical expression or the semi-analytical expression derived from the one trap-
-        one recombination (OTOR) model using a modified Levenberg-Marquardt algorithm. 
-        It provides the possibility of setting constraints or fixing any of parameters. 
-        It offers an interactive way to initialize parameters by clicking with a mouse 
-        on a plot at positions where peak maxima should be located. The optimal estimate 
-        is obtained by "trial-and-error". It also provides routines for simulating 
-        first-order, second-order, and general-order glow peaks (curves).
+Description: Deconvolving thermoluminescence glow curves according to various 
+        kinetic models (first-order, second-order, general-order, and mixed-order) using 
+        a modified Levenberg-Marquardt algorithm. It provides the possibility of setting 
+        constraints or fixing any of parameters. It offers an interactive way to initialize 
+        parameters by clicking with a mouse on a plot at positions where peak maxima should 
+        be located. The optimal estimate is obtained by "trial-and-error". It also provides 
+        routines for simulating first-order, second-order, and general-order glow peaks.
 License: GPL-2 | GPL-3
 Depends: R (>= 3.0.1)
 Imports: graphics, stats, utils
-URL: http://CRAN.R-project.org/package=tgcd
-Packaged: 2016-09-06 09:17:10 UTC; pengjun
+URL: https://CRAN.R-project.org/package=tgcd
+Packaged: 2019-03-28 19:00:12 UTC; pengjun
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2016-09-06 14:39:19
+Date/Publication: 2019-03-28 19:30:03 UTC

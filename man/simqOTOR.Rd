@@ -43,17 +43,17 @@ approximation. This function may be used to simulating glow peaks of first-, sec
 on the given kinetic parameters. The approximate equation of the OTOR model derived using the quasi-equilibrium 
 approximation can be described by (Pagonis et al., 2006):
 
-\eqn{\frac{dn}{dT}=-Ah*n^2*S*e^{-E/(kT)}/((n*Ah+(Nn-n)*An)*hr)}
+\eqn{\frac{d_n}{d_T}=\frac{-A_hn^2Sexp(-\frac{E}{kT})}{[nA_h+(N_n-n)A_n]\beta}}
 
-where \eqn{n} is the concentration of trapped electrons, \eqn{\frac{dn}{dT}} the rate of change of the concentration 
+where \eqn{n} is the concentration of trapped electrons, \eqn{\frac{d_n}{d_T}} the rate of change of the concentration 
 of trapped electrons, \eqn{S} the frequency factor, \eqn{E} the activation energy, \eqn{T} the absolute temperature, 
-\eqn{k} the Boltzmann constant, \eqn{Nn} the total concentration of the traps in the crystal, \eqn{Ah} the probability 
-coefficient of electron recombining with holes in the recombination center, \eqn{An} the probability coefficient of 
-electron retrapping in the traps, and \eqn{hr} the linear heating rate.
+\eqn{k} the Boltzmann constant, \eqn{N_n} the total concentration of the traps in the crystal, \eqn{A_h} the probability 
+coefficient of electron recombining with holes in the recombination center, \eqn{A_n} the probability coefficient of 
+electron retrapping in the traps, and \eqn{\beta} the linear heating rate.
 
 The ordinary equation is solved by the Fortran 77 subroutine \emph{lsoda} (original version written by Linda R. Petzold and 
 Alan C. Hindmarsh available at Netlib: \url{http://www.netlib.org/odepack/}, modified version by R. Woodrow Setzer from the R package 
-\emph{deSolve} (Soetaert et al., 2010) available at CRAN: \url{http://CRAN.R-project.org/package=deSolve}).
+\emph{deSolve} (Soetaert et al., 2010) available at CRAN: \url{https://CRAN.R-project.org/package=deSolve}).
 }
 
 \value{

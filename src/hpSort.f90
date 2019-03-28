@@ -7,7 +7,7 @@ subroutine hpSort(vec,n,indx)
 !      n : input, integer, the dimension of the vector.
 !   indx : output, integers, the orders of the elements.
 ! --------------------------------------------------------------------
-! Author: Peng Jun, 2014.08.22.
+! Author: Peng Jun, 2019.03.26.
 !---------------------------------------------------------------------
 ! Dependence:: No.----------------------------------------------------
 !---------------------------------------------------------------------
@@ -23,7 +23,10 @@ subroutine hpSort(vec,n,indx)
     integer(kind=4):: i, j, k, ir, rraIndx
     real   (kind=8):: rra
     !
-    if (n<2) return
+    if (n<2) then 
+        indx = 1
+        return
+    end if
     !
     do i= 1, n
         indx(i) = i

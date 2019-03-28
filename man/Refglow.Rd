@@ -6,22 +6,17 @@ Reference glow curves
 }
 
 \description{
-Two thermoluminescence glow curves.
+Synthetic and measured thermoluminescence glow curves from the GLOCANIN project.
 }
 
 \usage{data(Refglow)}
 
 \format{
-A list that contains two thermoluminescence glow curves:
-\describe{
-    \item{Refglow002}{a synthetic glow curve from the GLOCANIN project (Bos et al., 1993)}
-    \item{Refglow009}{an experimental glow-curve from the GLOCANIN project (Bos et al., 1994)}
-}
+A list that contains 10 thermoluminescence glow curves.
 }
 
 \details{
-\bold{Refglow} contains two thermoluminescence glow curves (Refglow002 and Refglow009) from the GLOCANIN project.
-The author is grateful to Adrie J.J. Bos for providing the reference glow curves of the GLOCANIN project to test function \link{tgcd}.
+This object contains 10 thermoluminescence glow curves (\code{x001} to \code{x010}) from the GLOCANIN project (Bos et al., 1993, 1994).
 }
 
 \references{

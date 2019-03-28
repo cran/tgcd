@@ -48,7 +48,7 @@ function enorm ( n, x )
   return
 end
 !
-subroutine fdjac2 ( fcn, m, n, x, fvec, fjac, ldfjac, iflag, epsfcn, xd, yd, lower, upper )
+subroutine fdjac2 ( fcn, m, n, x, fvec, fjac, ldfjac, iflag, epsfcn, xd, yd, lower, upper, bg )
 
 !*****************************************************************************80
 !
@@ -134,7 +134,7 @@ subroutine fdjac2 ( fcn, m, n, x, fvec, fjac, ldfjac, iflag, epsfcn, xd, yd, low
   real ( kind = 8 ) fjac(ldfjac,n)
   real ( kind = 8 ) fvec(m)
   real ( kind = 8 ) h
-  integer ( kind = 4 ) i
+  !!!integer ( kind = 4 ) i
   integer ( kind = 4 ) iflag
   integer ( kind = 4 ) j
   real ( kind = 8 ) temp
@@ -142,6 +142,7 @@ subroutine fdjac2 ( fcn, m, n, x, fvec, fjac, ldfjac, iflag, epsfcn, xd, yd, low
   real ( kind = 8 ) x(n)
   real ( kind = 8 ) xd(m), yd(m)
   real ( kind = 8 ) lower(n), upper(n)
+  integer ( kind=4 ) bg
 
   epsmch = epsilon ( epsmch )
 
@@ -156,7 +157,7 @@ subroutine fdjac2 ( fcn, m, n, x, fvec, fjac, ldfjac, iflag, epsfcn, xd, yd, low
     end if
 
     x(j) = temp + h
-    call fcn ( m, n, x, wa, iflag, xd, yd, lower, upper )
+    call fcn ( m, n, x, wa, iflag, xd, yd, lower, upper, bg )
 
     if ( iflag < 0 ) then
       exit
@@ -171,7 +172,7 @@ subroutine fdjac2 ( fcn, m, n, x, fvec, fjac, ldfjac, iflag, epsfcn, xd, yd, low
 end
 !
 subroutine lmdif ( fcn, m, n, x, fvec, ftol, xtol, gtol, maxfev, epsfcn, &
-  diag, mode, factor, nprint, info, nfev, fjac, ldfjac, ipvt, qtf, xd, yd, lower, upper )
+  diag, mode, factor, nprint, info, nfev, fjac, ldfjac, ipvt, qtf, xd, yd, lower, upper, bg )
 
 !*****************************************************************************80
 !
@@ -371,6 +372,7 @@ subroutine lmdif ( fcn, m, n, x, fvec, ftol, xtol, gtol, maxfev, epsfcn, &
   real ( kind = 8 ) xtol
   real ( kind = 8 ) xd(m), yd(m)
   real ( kind = 8 ) lower(n), upper(n)
+  integer ( kind=4 ) bg
 
   epsmch = epsilon ( epsmch )
 
@@ -407,7 +409,7 @@ subroutine lmdif ( fcn, m, n, x, fvec, ftol, xtol, gtol, maxfev, epsfcn, &
 !  Evaluate the function at the starting point and calculate its norm.
 !
   iflag = 1
-  call fcn ( m, n, x, fvec, iflag, xd, yd, lower, upper )
+  call fcn ( m, n, x, fvec, iflag, xd, yd, lower, upper, bg )
   nfev = 1
 
   if ( iflag < 0 ) then
@@ -428,7 +430,7 @@ subroutine lmdif ( fcn, m, n, x, fvec, ftol, xtol, gtol, maxfev, epsfcn, &
 !  Calculate the jacobian matrix.
 !
   iflag = 2
-  call fdjac2 ( fcn, m, n, x, fvec, fjac, ldfjac, iflag, epsfcn, xd, yd, lower, upper )
+  call fdjac2 ( fcn, m, n, x, fvec, fjac, ldfjac, iflag, epsfcn, xd, yd, lower, upper, bg )
   nfev = nfev + n
 
   if ( iflag < 0 ) then
@@ -440,7 +442,7 @@ subroutine lmdif ( fcn, m, n, x, fvec, ftol, xtol, gtol, maxfev, epsfcn, &
      if ( 0 < nprint ) then
        iflag = 0
        if ( mod ( iter-1, nprint ) == 0 ) then
-         call fcn ( m, n, x, fvec, iflag, xd, yd, lower, upper )
+         call fcn ( m, n, x, fvec, iflag, xd, yd, lower, upper, bg )
        end if
        if ( iflag < 0 ) then
          go to 300
@@ -556,7 +558,7 @@ subroutine lmdif ( fcn, m, n, x, fvec, ftol, xtol, gtol, maxfev, epsfcn, &
 !  Evaluate the function at X + P and calculate its norm.
 !
         iflag = 1
-        call fcn ( m, n, wa2, wa4, iflag, xd, yd, lower, upper )
+        call fcn ( m, n, wa2, wa4, iflag, xd, yd, lower, upper, bg )
         nfev = nfev + 1
         if ( iflag < 0 ) then
           go to 300
@@ -697,13 +699,13 @@ subroutine lmdif ( fcn, m, n, x, fvec, ftol, xtol, gtol, maxfev, epsfcn, &
   iflag = 0
 
   if ( 0 < nprint ) then
-    call fcn ( m, n, x, fvec, iflag, xd, yd, lower, upper )
+    call fcn ( m, n, x, fvec, iflag, xd, yd, lower, upper, bg )
   end if
 
   return
 end
 !
-subroutine lmdif1 ( fcn, m, n, x, fvec, tol, info, xd, yd, lower, upper )
+subroutine lmdif1 ( fcn, m, n, x, fvec, tol, info, xd, yd, lower, upper, bg )
 
 !*****************************************************************************80
 !
@@ -810,6 +812,7 @@ subroutine lmdif1 ( fcn, m, n, x, fvec, tol, info, xd, yd, lower, upper )
   real ( kind = 8 ) xtol
   real ( kind = 8 ) xd(m), yd(m)
   real ( kind = 8 ) lower(n), upper(n)
+  integer ( kind=4 ) bg
 
   info = 0
 
@@ -832,7 +835,7 @@ subroutine lmdif1 ( fcn, m, n, x, fvec, tol, info, xd, yd, lower, upper )
   ldfjac = m
 
   call lmdif ( fcn, m, n, x, fvec, ftol, xtol, gtol, maxfev, epsfcn, &
-    diag, mode, factor, nprint, info, nfev, fjac, ldfjac, ipvt, qtf, xd, yd, lower, upper )
+    diag, mode, factor, nprint, info, nfev, fjac, ldfjac, ipvt, qtf, xd, yd, lower, upper, bg )
 
   if ( info == 8 ) then
     info = 4
@@ -951,7 +954,7 @@ subroutine lmpar ( n, r, ldr, ipvt, diag, qtb, delta, par, x, sdiag )
   real ( kind = 8 ) enorm
   real ( kind = 8 ) gnorm
   real ( kind = 8 ) fp
-  integer ( kind = 4 ) i
+  !!!integer ( kind = 4 ) i
   integer ( kind = 4 ) ipvt(n)
   integer ( kind = 4 ) iter
   integer ( kind = 4 ) j
@@ -962,7 +965,7 @@ subroutine lmpar ( n, r, ldr, ipvt, diag, qtb, delta, par, x, sdiag )
   real ( kind = 8 ) parc
   real ( kind = 8 ) parl
   real ( kind = 8 ) paru
-  real ( kind = 8 ) qnorm
+  !!!real ( kind = 8 ) qnorm
   real ( kind = 8 ) qtb(n)
   real ( kind = 8 ) r(ldr,n)
   real ( kind = 8 ) sdiag(n)
@@ -1231,7 +1234,7 @@ subroutine qrfac ( m, n, a, lda, pivot, ipvt, lipvt, rdiag, acnorm )
   real ( kind = 8 ) ajnorm
   real ( kind = 8 ) enorm
   real ( kind = 8 ) epsmch
-  integer ( kind = 4 ) i
+  !!!integer ( kind = 4 ) i
   integer ( kind = 4 ) i4_temp
   integer ( kind = 4 ) ipvt(lipvt)
   integer ( kind = 4 ) j
