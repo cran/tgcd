@@ -6,7 +6,7 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
          hr=NULL, hwd=NULL, pod=NULL, plot=TRUE, outfile=NULL)  {
     UseMethod("tgcd")
 } #
-### 2019.03.29.
+### 2019.12.03.
 tgcd.default <- 
 function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2", 
          pickb="d0", nstart=60, kkf=0.03, mdt=NULL, mwt=NULL, 
@@ -804,6 +804,9 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
        ###
        ### Plot the results.
        if (plot==TRUE) {
+           opar <- par("mfrow", "mar")
+           on.exit(par(opar))
+           ###
            layout(cbind(c(rep(1,13), 2, rep(3,6)), c(rep(1,13), 2, rep(3,6))))
            ###
            ### The first plot.
@@ -849,8 +852,6 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
            ### abline(h=0)
            box(lwd=2.0)
            ###
-           par(mar=c(5,4,4,2)+0.1)
-           layout(1L)
        } # end if.
        ###
        ###

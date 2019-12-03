@@ -1,9 +1,9 @@
-6649d41b1da07747e0687c37505642ce *DESCRIPTION
+9d75e832c881b54eea7471ef3c6cd9b5 *DESCRIPTION
 56dc42af0d846e67a225501a8f56a593 *NAMESPACE
 b4720a60cb82ab230ec893b50f181176 *R/savgol.R
-22e7fe92c9d80be1e64f132b2936c3ce *R/simPeak.R
-aa3ba80452ec6913c9d4be63ebf0716b *R/simqOTOR.R
-51ffbff2bf47e177a3e632c42269fa51 *R/tgcd.R
+ce6200ad568328ba090cb0a98d2591e9 *R/simPeak.R
+12c339004709f7e34b14d8264dca3c6b *R/simqOTOR.R
+d471af65cb1873963b7c8144cb7ceceb *R/tgcd.R
 d5865f6ef58350c00937c5b847671b25 *data/Kitis.RData
 2eb3739640bc20af0ec4fcd040f127dd *data/Refglow.RData
 e4c376a78ddfb8156c591cbe344f5908 *inst/CITATION
@@ -12,8 +12,8 @@ a077862b01b0a7b78151cc93279600fe *man/Refglow.Rd
 d2ae6a8d299e5dbfe36e4377fce67b71 *man/savgol.Rd
 9a729b23447cf6a217f17fe425124f3b *man/simPeak.Rd
 1cda0924cba863326362cacf2548b9f6 *man/simqOTOR.Rd
-11b9cd42f4a98513356883d22eeee373 *man/tgcd-package.Rd
-75bd0a3c7b2da32678a59fdeacae8786 *man/tgcd.Rd
+30a9886cdf97c5758be77562776a02d6 *man/tgcd-package.Rd
+3a23e832f09598ff80475a88ef311afe *man/tgcd.Rd
 c1a352da5eef2d9de60fad97b68f70e3 *src/calcAm.f90
 402034b75bed42d1774a575939886c18 *src/calcFct.f90
 1bada7010340b1d1bcb80e015d0e9a38 *src/calcLv.f90

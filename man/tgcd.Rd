@@ -344,47 +344,23 @@ The author whould like to appreciate George Kitis, who gave some useful suggesti
   dd1$sp
   dd1$FOM
 
-# Not run.
 # (2) Deconvolution of a glow curve using 5 peaks (with background subtraction) with 
 #     a mixed-order model using user-supplied intial kinetic and background parameters. 
-#  knPars <- 
-#  cbind(c(46829.06, 187942.43, 121876.22, 110390.55, 67978.33), #Im
-#        c(1.17, 1.14, 1.57, 0.77, 1.31),                        # E
-#        c(369.86, 400.69, 428.51,  482.41, 537.28),             # Tm
-#        c(0.75,  0.81, 0.92, 0.001, 0.29))                      # a
-#
-#  bgPars <- c(14201, 14121, 0.0176, 677.57)  # A, B, C, D.
-#
-#  dd2 <- tgcd(Kitis$x009, npeak=5, model="m1", subBG=TRUE, 
-#              inisPAR=knPars, inisBG=bgPars, nstart=10, edit.inis=FALSE)
-#
-#  dd2$residual
-#  dd2$SSR
-#  dd2$R2
-#  dd2$BGpars
+  knPars <- 
+  cbind(c(46829.06, 187942.43, 121876.22, 110390.55, 67978.33), #Im
+        c(1.17, 1.14, 1.57, 0.77, 1.31),                        # E
+        c(369.86, 400.69, 428.51,  482.41, 537.28),             # Tm
+        c(0.75,  0.81, 0.92, 0.001, 0.29))                      # a
 
-# Not run.
-# (3) Deconvolve a glow curve using 9 peaks (no background subtraction) 
-#     a general-order model using user-supplied initial kinetic parameters.
-# knPars <- 
-# cbind(c(9824, 21009, 27792, 50520, 7153, 5496, 6080, 1641, 2316),  # Im
-#       c(1.24, 1.36, 2.10, 2.65, 1.43, 1.16, 2.48, 2.98, 2.25),     # E
-#       c(387, 428, 462, 488, 493, 528, 559, 585, 602),              # Tm
-#       c(1.02, 1.15, 1.99, 1.20, 1.28, 1.19, 1.40, 1.01, 1.18))     # b
-#
-# dd3 <- tgcd(Refglow$x009, npeak=9, model="g1",
-#             inisPAR=knPars, nstart=10, edit.inis=FALSE)
-#
-# hist(dd3$residuals)
+  bgPars <- c(14201, 14121, 0.0176, 677.57)  # A, B, C, D.
 
-# Not run.
-# (4) Deconvolve a glow curve using 2 peaks (with background subtraction) the Lambert
-#     W (Wright Omega) function, parameters are initialized by clicking with a mouse.
-#
-# dd4 <- tgcd(Kitis$x005, npeak=2, subBG=TRUE, hwd=20)
-# 
-# dd4$pars
-# dd4$sp
+  dd2 <- tgcd(Kitis$x009, npeak=5, model="m1", subBG=TRUE, 
+              inisPAR=knPars, inisBG=bgPars, nstart=10, edit.inis=FALSE)
+
+  dd2$residual
+  dd2$SSR
+  dd2$R2
+  dd2$BGpars
 }
 
 \keyword{package tgcd}

@@ -5,7 +5,7 @@ function(temps, n0, Nn=NULL, bv=NULL, ff,
          outfile=NULL,  plot=TRUE) {
     UseMethod("simPeak")
 } #
-### 2016.05.22.
+### 2019.12.03.
 simPeak.default <- 
 function(temps, n0, Nn=NULL, bv=NULL, ff, 
          ae, hr, typ=c("f", "s", "g"), 
@@ -98,9 +98,12 @@ function(temps, n0, Nn=NULL, bv=NULL, ff,
     sp <- try(calShape(tout, yout), silent=TRUE)
     ###
     if (plot==TRUE)  {
+        opar <- par("mfrow", "mar")
+        on.exit(par(opar))
+        ###
         layout(cbind(c(rep(1,13), 2, rep(3,6)), 
                      c(rep(1,13), 2, rep(3,6))))
-        par(mar = c(0,5.1,3.1,1.1))
+        par(mar=c(0,5.1,3.1,1.1))
         ###
         ### The first plot.
         plot(tout, yout, type="l", lwd=5, col="skyblue3",
@@ -138,9 +141,7 @@ function(temps, n0, Nn=NULL, bv=NULL, ff,
         plot(tout, res$vecy, type="l", xlab = "Temperature(K)", 
              ylab="Concentration", las=0, lab=c(7,7,9), xaxs="r", yaxs="i",
              ylim=c(-0.1*n0, 1.1*n0), col="grey", lwd=5, cex.lab=2.0, cex.axis=1.5)
-        box(lwd=2L) 
-        par(mar=c(5,4,4,2)+0.1)
-        layout(1L)
+        box(lwd=2L)
     } # end if.
     ###
     if (class(sp)=="try-error")  sp <- NULL
