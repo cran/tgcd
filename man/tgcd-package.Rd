@@ -9,14 +9,14 @@ Package for thermoluminescence glow curve deconvolution (tgcd) and glow peak sim
 \tabular{ll}{
 Package: \tab tgcd\cr
 Type: \tab Package\cr
-Version: \tab 2.3\cr
-Date: \tab 2019-12-03\cr
+Version: \tab 2.4\cr
+Date: \tab 2020-05-08\cr
 License: \tab  GPL-2 | GPL-3 \cr
 }
 }
 \author{
 \tabular{ll}{
-Jun Peng \tab University of Chinese Academy of Sciences, Beijing, China
+Jun Peng \tab Hunan University of Science and Technology, Xiangtan, China
 }
 
 \bold{Package maintainer}\cr

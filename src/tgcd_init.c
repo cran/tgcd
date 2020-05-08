@@ -26,6 +26,7 @@ extern void F77_NAME(tgcd_drive)(void *, void *, void *, void *, void *, void *,
 
 extern void F77_NAME(wrightomega)(void *, void *);
 
+extern void F77_NAME(lambertw)(void *, void *, void *);
 
 
 
@@ -39,6 +40,7 @@ static const R_FortranMethodDef FortranEntries[] = {
     {"simpeak",       (DL_FUNC) &F77_NAME(simpeak),      11},
     {"tgcd_drive",    (DL_FUNC) &F77_NAME(tgcd_drive),   21},
     {"wrightomega",   (DL_FUNC) &F77_NAME(wrightomega),   2},
+    {"lambertw",      (DL_FUNC) &F77_NAME(lambertw),      3},
     {NULL, NULL, 0}
 };
 

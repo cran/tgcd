@@ -6,7 +6,7 @@ subroutine tgcfunc_gnr3(nd,n2,pars,fvec,iflag,&
 ! to the general-order equation (type 3).
 !--------------------------------------------------------
 !        nd:: input, integer, number of data points.
-!        n2:: input, integer, number of pars (<=52+4).
+!        n2:: input, integer, number of pars (<=52+3).
 !  pars(n2):: input, real values, pars.
 !  fvec(nd):: output, real values, residuals.
 !     iflag:: input, integer, working variable.
@@ -17,7 +17,7 @@ subroutine tgcfunc_gnr3(nd,n2,pars,fvec,iflag,&
 !        bg:: input, integer, subtract background or not,
 !             0=no subtraction, 1=subtraction.
 !---------------------------------------------------------
-! Author:: Peng Jun, 2019.03.24.
+! Author:: Peng Jun, 2020.05.08.
 !---------------------------------------------------------
 ! Dependence:: NO.
 !---------------------------------------------------------
@@ -28,8 +28,8 @@ subroutine tgcfunc_gnr3(nd,n2,pars,fvec,iflag,&
                       fvec(nd), xd(nd), yd(nd)               
     ! Local variables.
     real   (kind=8), parameter:: kbz=8.617385e-5
-    real   (kind=8):: xx(52+4), maxi, engy, maxt, bv, expv(nd),&
-                      ba, bb, bc, bd
+    real   (kind=8):: xx(52+3), maxi, engy, maxt, bv, expv(nd),&
+                      ba, bb, bc
     integer(kind=4):: i, n0
     !
     ! Bound constraints.
@@ -41,7 +41,7 @@ subroutine tgcfunc_gnr3(nd,n2,pars,fvec,iflag,&
         end if
     end do
     !
-    n0 = n2 - 4
+    n0 = n2 - 3
     !
     xx = 0.0
     xx(1:n2) = pars(1:n2)
@@ -52,9 +52,8 @@ subroutine tgcfunc_gnr3(nd,n2,pars,fvec,iflag,&
         ba = xx(n0+1)
         bb = xx(n0+2)
         bc = xx(n0+3)
-        bd = xx(n0+4)
         !
-        fvec = ba-bb/(1.0+exp(bc*(xd-bd)))
+        fvec = ba + bb * exp(xd/bc)
     end if
     !
     !

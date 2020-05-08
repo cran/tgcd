@@ -5,14 +5,14 @@ subroutine calcMaty_pdf2(nd,n2,pars,xd,maty,bg)
 ! to first-order kinetic using the logistic asymmetric equation.
 !---------------------------------------------------------------------
 !                  nd:: input, integer, number of data points.
-!                  n2:: input, integer, number of pars (<=39+4).
+!                  n2:: input, integer, number of pars (<=39+3).
 !            pars(n2):: input, real values, pars.
 !              xd(nd):: input, real values, observations X.
-! maty(nd,(n2-4)/3+1):: output, real values, calculated signals.
+! maty(nd,(n2-3)/3+1):: output, real values, calculated signals.
 !                  bg:: input, integer, subtract background or not,
 !                       0=no subtraction, 1=subtraction.
 !---------------------------------------------------------------------
-! Author:: Peng Jun, 2019.03.24.
+! Author:: Peng Jun, 2020.05.08.
 !---------------------------------------------------------------------
 ! Dependence:: NO.
 !---------------------------------------------------------------------
@@ -20,14 +20,14 @@ subroutine calcMaty_pdf2(nd,n2,pars,xd,maty,bg)
     implicit none 
     integer(kind=4), intent(in):: nd, n2, bg
     real   (kind=8), intent(in):: pars(n2), xd(nd)
-    real   (kind=8), intent(out):: maty(nd,(n2-4)/3+1)    
+    real   (kind=8), intent(out):: maty(nd,(n2-3)/3+1)    
     ! Local variables.
     real   (kind=8), parameter:: kbz=8.617385e-5
-    real   (kind=8):: xx(39+4), maxi, engy, maxt, a2v, xa(nd), expv1(nd),&
-                      ba, bb, bc, bd
+    real   (kind=8):: xx(39+3), maxi, engy, maxt, a2v, xa(nd), expv1(nd),&
+                      ba, bb, bc
     integer(kind=4):: i, n0
     !
-    n0 = n2 - 4
+    n0 = n2 - 3
     !
     xx = 0.0
     xx(1:n2) = pars(1:n2)
@@ -54,9 +54,8 @@ subroutine calcMaty_pdf2(nd,n2,pars,xd,maty,bg)
         ba = xx(n0+1)
         bb = xx(n0+2)
         bc = xx(n0+3)
-        bd = xx(n0+4)
         !
-        maty(:,n0/3+1) = ba-bb/(1.0+exp(bc*(xd-bd)))
+        maty(:,n0/3+1) = ba + bb * exp(xd/bc)
     end if
     !
     return

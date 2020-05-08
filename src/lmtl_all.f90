@@ -27,11 +27,12 @@ subroutine lmtl_all(xd,yd,nd,pars,n2,fmin,&
 !             9=mix-order (type 2),
 !             10=mix-order (type 3),
 !             11=weibull function,
-!             12=logistic asymmetric equation.
+!             12=logistic asymmetric equation,
+!             13=LW function (both branches).
 !        bg:: input, integer, subtract background or not,
 !             0=no subtraction, 1=subtraction.
 !------------------------------------------------------
-! Author:: Peng Jun, 2019.03.24.
+! Author:: Peng Jun, 2020.05.07.
 !------------------------------------------------------
 ! Dependence:: subroutine lmdif1; 
 !              subroutine tgcfunc_frt1;
@@ -45,7 +46,8 @@ subroutine lmtl_all(xd,yd,nd,pars,n2,fmin,&
 !              subroutine tgcfunc_mix2;
 !              subroutine tgcfunc_mix3;
 !              subroutine tgcfunc_pdf1;
-!              subroutine tgcfunc_pdf2.
+!              subroutine tgcfunc_pdf2;
+!              subroutine tgcfunc_lw1. 
 !------------------------------------------------------
     implicit none
     integer(kind=4), intent(in):: nd, n2, tp, bg
@@ -71,6 +73,7 @@ subroutine lmtl_all(xd,yd,nd,pars,n2,fmin,&
     external:: tgcfunc_mix3
     external:: tgcfunc_pdf1
     external:: tgcfunc_pdf2
+    external:: tgcfunc_lw1
     !
     fmin = -99.0
     !
@@ -121,6 +124,10 @@ subroutine lmtl_all(xd,yd,nd,pars,n2,fmin,&
     else if (tp==12) then
         !
         call lmdif1(tgcfunc_pdf2,nd,n2,pars,fvec,tol,info,xd,yd,lower,upper,bg)
+        !
+    else if (tp==13) then
+        !
+        call lmdif1(tgcfunc_lw1,nd,n2,pars,fvec,tol,info,xd,yd,lower,upper,bg)
         !
     end if
     !

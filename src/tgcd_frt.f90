@@ -9,7 +9,7 @@ subroutine tgcd_frt(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
 !               yd(nd):: input, real vlaues, observations Y.
 !                   nd:: input, integer, number of points.
 !             pars(n2):: input/output, paraneters.
-!                   n2:: input, integer, number of pars (<=39+4).
+!                   n2:: input, integer, number of pars (<=39+3).
 !                 fmin:: output, real value, minimized objective.
 !            lower(n2):: input, real values, lower bounds.
 !            upper(n2):: input, real values, upper bounds.
@@ -34,11 +34,11 @@ subroutine tgcd_frt(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
 !                        12=logistic asymmetric equation.
 !                   bg:: input, integer, subtract background or not,
 !                        0=no subtraction, 1=subtraction.
-! tlsig(nd,(n2-4)/3+1):: output, real values, optimized TL signal values.
+! tlsig(nd,(n2-3)/3+1):: output, real values, optimized TL signal values.
 !           suminfo(5):: output, integer values, a summary of error information.
 !              message:: output, integer, error message: 0=success, 1=failure.                  
 !---------------------------------------------------------------------------------
-! Author:: Peng Jun, 2019.03.28.
+! Author:: Peng Jun, 2020.05.08.
 !---------------------------------------------------------------------------------
 ! Dependence:: subroutine lmtl_all; 
 !              subroutine hpSort;
@@ -54,19 +54,19 @@ subroutine tgcd_frt(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
     real   (kind=8), intent(in):: xd(nd), yd(nd), mdt, mwt, mr, kkf
     real   (kind=8), intent(in):: lower(n2), upper(n2)
     real   (kind=8), intent(inout):: pars(n2)
-    real   (kind=8), intent(out):: fmin, tlsig(nd,(n2-4)/3+1)
+    real   (kind=8), intent(out):: fmin, tlsig(nd,(n2-3)/3+1)
     integer(kind=4), intent(out):: suminfo(5), message
     ! Local variables.
     real   (kind=8):: ran(n2), ranpars(n2), pars0(n2), ranfmin, minfmin, unifa(n2), unifb(n2),&
-                      orderTemp((n2-4)/3), mindist, maxwidth, minresol, resolvec((n2-4)/3-1),&
-                      maty(nd,(n2-4)/3+1), matsp((n2-4)/3,7)
-    integer(kind=4):: i, j, info, indx((n2-4)/3), flag, icy, n0
+                      orderTemp((n2-3)/3), mindist, maxwidth, minresol, resolvec((n2-3)/3-1),&
+                      maty(nd,(n2-3)/3+1), matsp((n2-3)/3,7)
+    integer(kind=4):: i, j, info, indx((n2-3)/3), flag, icy, n0
     real   (kind=8), parameter:: ceof_a(9)=(/1.58, 1.766, 1.953, 2.141, 2.329,&
                                              2.519, 2.709,2.9,3.283/),&
                                  coef_x(9)=(/1.038,1.038,1.035,1.0325,1.0303,&
                                              1.0284,1.0267,1.0252,1.0226/)
     !
-    n0 = n2 - 4
+    n0 = n2 - 3
     !
     fmin = -99.0
     tlsig = -99.0
@@ -193,8 +193,8 @@ subroutine tgcd_frt(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
     unifb(2*n0/3+1:n0) = pars0(2*n0/3+1:n0)*(1.0+kkf)
     !
     ! Background values.
-    unifa(n0+1:n0+4) = pars0(n0+1:n0+4)*(1.0-kkf)
-    unifb(n0+1:n0+4) = pars0(n0+1:n0+4)*(1.0+kkf)
+    unifa(n0+1:n0+3) = pars0(n0+1:n0+3)*(1.0-kkf)
+    unifb(n0+1:n0+3) = pars0(n0+1:n0+3)*(1.0+kkf)
     !
     !
     ! Try-and-error.

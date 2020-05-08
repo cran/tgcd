@@ -8,7 +8,7 @@ Thermoluminescence glow curve deconvolution (tgcd)
 Thermoluminescence glow curve deconvolution according to various first-order, second-order, general-order, and mixed-order empirical expressions.
 }
 \usage{
-tgcd(Sigdata, npeak, model = "lw", subBG = FALSE, pickp = "d2", 
+tgcd(Sigdata, npeak, model = "wo", subBG = FALSE, pickp = "d2", 
      pickb = "d0", nstart = 60, kkf = 0.03, mdt = NULL, mwt = NULL,  
      mr = NULL, edit.inis = TRUE, inisPAR = NULL, inisBG = NULL, 
      hr = NULL, hwd = NULL, pod = NULL, plot = TRUE, outfile = NULL)
@@ -21,7 +21,7 @@ stored in the first and second column, respectively}
 \item{npeak}{\link{integer}(\bold{required}): number of glow peaks, the allowed maximum number of glow peaks is set equal to 13}
 
 \item{model}{\link{character}(with default): model used for glow curve deconvolution, \code{"f1"}, \code{"f2"}, and \code{"f3"} for first-order models, \code{"s1"}, 
-\code{"s2"} for second-order models, \code{"g1"}, \code{"g2"}, \code{"g3"} for general-order models, \code{"lw"} for the Lambert W (Wright Omega) function, 
+\code{"s2"} for second-order models, \code{"g1"}, \code{"g2"}, \code{"g3"} for general-order models, \code{"wo"} and \code{"lw"} for the Wright Omega and the Lambert W functions,
 \code{"m1"}, \code{"m2"}, and \code{"m3"} for the mixed-order models (see \bold{Details})}
 
 \item{subBG}{\link{logical}(with default): whether the user want to subtract the background during the deconvolution}
@@ -56,8 +56,8 @@ the initialized kinetic (and/or background) parameters through an automatically 
 \item{inisPAR}{\link{matrix}(optional): a matrix (\code{3} or \code{4} columns) used for storing initial
 kenetic parameters \code{Im}, \code{E}, \code{Tm}, \code{b} (or \code{R}, \code{a}) (see \bold{Examples})}
 
-\item{inisBG}{\link{vector}(optional): a 4-element vector used for storing initial background parameters 
-\code{A}, \code{B}, \code{C}, and \code{D} used for background subtraction (see \bold{Examples})}
+\item{inisBG}{\link{vector}(optional): a 3-element vector containing initial background parameters 
+\code{A}, \code{B}, and \code{C} used for background subtraction (see \bold{Examples})}
 
 \item{hr}{\link{numeric}(optional): linear heating rate used for calculating the frequency factor}
 
@@ -121,46 +121,58 @@ where \eqn{F(x)} is a rational approximation function of the form\cr\cr
 \strong{<8>}The third type of general-order empirical expression (\code{model="g3"}) is (Gomez-Ros and Kitis, 2002)\cr\cr
 \eqn{I(T)=I_mexp(\frac{E}{kT_m^2}(T-T_m))[\frac{1}{b}+\frac{b-1}{b}exp(\frac{E}{kT_m^2}(T-T_m))]^{-\frac{b}{b-1}}}\cr
 
-\strong{<9>}Recently the semi-analytical expression derived from the one trap-one recombination (OTOR) model has also been applied to fit general-order glow peaks,
+\bold{One trap-one recombination (OTOR) model} based semi-analytical expressions have also been applied to fit glow peaks,
 by using either the Lambert W function (Kitis and Vlachos, 2013; Sadek et al., 2015; Kitis et al., 2016) or 
 the Wright Omega function (Singh and Gartia, 2013; 2014; 2015).
-The four parameters describing a glow peak are: \eqn{I_m}, \eqn{E}, \eqn{T_m}, and an extra parameter \eqn{R=\frac{A_n}{A_m}<1},
-The semi-analytical expression can be described as (\code{model="lw"})\cr\cr
-\eqn{I(T)=I_mexp(\frac{E}{kT}\frac{T_m-T}{T_m})\frac{\omega(Z_m)+[\omega(Z_m)]^2}{\omega(Z)+[\omega(Z)]^2}}\cr\cr
-where \eqn{Z_m=\frac{R}{1-R}-log[\frac{1-R}{R}+\frac{Eexp(\frac{E}{kT_m})}{kT_m^2(1-1.05R^{1.26})}]F(T_m,E)},\cr\cr
-and \eqn{Z=\frac{R}{1-R}-log[\frac{1-R}{R}+\frac{Eexp(\frac{E}{kT_m})}{kT_m^2(1-1.05R^{1.26})}]F(T,E)},\cr\cr
+The four parameters describing a glow peak are: \eqn{I_m}, \eqn{E}, \eqn{T_m}, and \eqn{R=\frac{A_n}{A_m}} 
+(where \eqn{A_n} and \eqn{A_m} represent the retrapping and recombination probabilities, respectively).
+Two analytical expressions describing the OTOR model are available in function \link{tgcd}:\cr
+\strong{<9>}The semi-analytical expression derived using the Wright Omega function (\eqn{R=\frac{A_n}{A_m}<1}) can be described as (\code{model="wo"})\cr\cr
+\eqn{I(T)=I_mexp(-\frac{E}{kT}\frac{T_m-T}{T_m})\frac{\omega(Z_m)+[\omega(Z_m)]^2}{\omega(Z)+[\omega(Z)]^2}}\cr\cr
+where \eqn{Z_m=\frac{R}{1-R}-log(\frac{1-R}{R})+\frac{Eexp(\frac{E}{kT_m})}{kT_m^2(1-1.05R^{1.26})}F(T_m,E)},\cr\cr
+and \eqn{Z=\frac{R}{1-R}-log(\frac{1-R}{R})+\frac{Eexp(\frac{E}{kT_m})}{kT_m^2(1-1.05R^{1.26})}F(T,E)},\cr\cr
+\strong{<10.1>}The semi-analytical expression derived using the Lambert W function for \eqn{R=\frac{A_n}{A_m}<1} can be described as (\code{model="lw"})\cr\cr
+\eqn{I(T)=I_mexp(-\frac{E}{kT}\frac{T_m-T}{T_m})\frac{W(exp(Z_m))+[W(exp(Z_m))]^2}{W(exp(Z))+[W(exp(Z))]^2}}\cr\cr
+where \eqn{Z_m=\frac{R}{1-R}-log(\frac{1-R}{R})+\frac{Eexp(\frac{E}{kT_m})}{kT_m^2(1-1.05R^{1.26})}F(T_m,E)},\cr\cr
+and \eqn{Z=\frac{R}{1-R}-log(\frac{1-R}{R})+\frac{Eexp(\frac{E}{kT_m})}{kT_m^2(1-1.05R^{1.26})}F(T,E)},\cr\cr
+\strong{<10.2>}The semi-analytical expression derived using the Lambert W function for \eqn{R=\frac{A_n}{A_m}>1} can be described as (\code{model="lw"})\cr\cr
+\eqn{I(T)=I_mexp(-\frac{E}{kT}\frac{T_m-T}{T_m})\frac{W(-1,-exp(-Z_m))+[W(-1,-exp(-Z_m))]^2}{W(-1,-exp(-Z))+[W(-1,-exp(-Z))]^2}}\cr\cr
+where \eqn{Z_m=|\frac{R}{1-R}|+log(|\frac{1-R}{R}|)+\frac{Eexp(\frac{E}{kT_m})}{kT_m^2(2.963-3.24R^{-0.74})}F(T_m,E)},\cr\cr
+and \eqn{Z=|\frac{R}{1-R}|+log(|\frac{1-R}{R}|)+\frac{Eexp(\frac{E}{kT_m})}{kT_m^2(2.963-3.24R^{-0.74})}F(T,E)}\cr\cr
+\eqn{F(T_m,E)} and \eqn{F(T,E)} are described as follows\cr\cr
 \eqn{F(T_m,E)=T_mexp(-\frac{E}{kT_m})+\frac{E}{k}Ei(-\frac{E}{kT_m})},\cr\cr
 \eqn{F(T,E)=Texp(-\frac{E}{kT})+\frac{E}{k}Ei(-\frac{E}{kT})}\cr\cr
 where \eqn{\omega(x)} and \eqn{Ei(x)} are the wright Omega function and the exponential integral function for variable \eqn{x}, respectively.
+\eqn{W(x)} and \eqn{W(-1,x)} are the principal and the second branches of the Lambert W function, respectively.
 The Fortran 90 subroutine used for evaluating the Wright Omega function is transformed from the Matlab code provided by Andrew Horchler (\url{https://github.com/horchler/wrightOmegaq}).
 The Fortran 90 subroutine (original Fortran 77 version by William Cody) used for evaluating the Lambert W function written by John Burkardt is available at 
 \url{http://people.sc.fsu.edu/~jburkardt/f_src/toms743/toms743.f90}. 
 The Fortran 90 subroutine used for evaluating the exponential integral function is written by John Burkardt (original Fortran 77 version by William Cody) 
-(\url{http://people.sc.fsu.edu/~jburkardt/f_src/toms715/toms715.f90}).
+(\url{http://people.sc.fsu.edu/~jburkardt/f_src/toms715/toms715.f90}).\cr
 
 \bold{Mixed-order} kinetic models introduce an extra parameter \eqn{\alpha=\frac{n_0}{n_0+M}} where \eqn{n_0} is the initial filled concentration of the active traps and \eqn{M}
-that of the thermally disconnected deep traps (Sunta et al., 2002). The four parameters describing a glow peak are: \eqn{I_m}, \eqn{E}, \eqn{T_m}, and \eqn{\alpha}.
+is the trap concentration of the thermally disconnected deep traps (Sunta et al., 2002). The four parameters describing a glow peak are: \eqn{I_m}, \eqn{E}, \eqn{T_m}, and \eqn{\alpha}.
 Three empirical expressions describing mixed-order glow peaks are available in function \link{tgcd}:\cr
-\strong{<10>}The first type of mixed-order empirical expression (\code{model="m1"}) is (Kitis and Gomez-Ros, 2000)\cr\cr
+\strong{<11>}The first type of mixed-order empirical expression (\code{model="m1"}) is (Kitis and Gomez-Ros, 2000)\cr\cr
 \eqn{I(T)=\frac{I_m[exp(\frac{1-\frac{2kT_m}{E}}{R_m})-\alpha]^2exp(\frac{E}{kT}\frac{T-T_m}{T_m})exp[\frac{T^2}{T_m^2R_m}exp(\frac{E}{kT}\frac{T-T_m}{T_m})
 (1-\frac{2kT}{E})]}{exp(\frac{1-\frac{2kT_m}{E}}{R_m})[exp[\frac{T^2}{T_m^2R_m}exp(\frac{E}{kT}\frac{T-T_m}{T_m})(1-\frac{2kT}{E})]-\alpha]^2}}\cr\cr\cr
 where \eqn{R_m=\frac{A_m+\alpha}{A_m-\alpha}} and \eqn{A_m=exp(\frac{A_m-\alpha}{A_m+\alpha}(1-\frac{2kT_m}{E}))}\cr
 
-\strong{<11>}The second type of mixed-order empirical expression (\code{model="m2"}) is (Gomez-Ros and Kitis, 2002)\cr\cr
+\strong{<12>}The second type of mixed-order empirical expression (\code{model="m2"}) is (Gomez-Ros and Kitis, 2002)\cr\cr
 \eqn{I(T)=\frac{4I_mR_m^2exp(\frac{E}{kT_m}-\frac{E}{kT})exp[R_m\frac{E}{kT_m}(\frac{T}{T_m}exp(\frac{E}{kT_m}-\frac{E}{kT})F(\frac{E}{kT})-F(\frac{E}{kT_m}))]}
 {(1+R_m)[exp[R_m\frac{E}{kT_m}(\frac{T}{T_m}exp(\frac{E}{kT_m}-\frac{E}{kT})F(\frac{E}{kT})-F(\frac{E}{kT_m}))]-(1-R_m)]^2}}\cr\cr
 where \eqn{R_m=(1-\alpha)(1+0.2922\alpha-0.2783\alpha^2)}\cr\cr
 \eqn{F(x)=1-\frac{a_0+a_1x+x^2}{b_0+b_1x+x^2}}\cr\cr
 \eqn{a_0=0.250621}, \eqn{a_1=2.334733}, \eqn{b_0=1.681534}, \eqn{b_1=3.330657}\cr
 
-\strong{<12>}The third type of mixed-order empirical expression (\code{model="m3"}) is (Vejnovic et al., 2008)\cr\cr
+\strong{<13>}The third type of mixed-order empirical expression (\code{model="m3"}) is (Vejnovic et al., 2008)\cr\cr
 \eqn{I(T)=\frac{I_m\alpha(2-l)^2exp[\frac{T^2}{T_m^2}(\frac{2}{l}-1)exp(\frac{E}{kT_m}\frac{T-T_m}{T_m})(1-\frac{2kT}{E})]exp(\frac{E}{kT_m}\frac{T-T_m}{T_m})}{
 (l-1)[exp[\frac{T^2}{T_m^2}(\frac{2}{l}-1)exp(\frac{E}{kT_m}\frac{T-T_m}{T_m})(1-\frac{2kT}{E})]-\alpha]^2}}\cr\cr\cr
 where \eqn{\alpha=(l-1)exp[\frac{2-l}{l}(1-\frac{2kT_m}{E})]}\cr
 
-The \strong{background} will be subtracted using the following expression if \code{subBG=TRUE}\cr\cr
-\eqn{I(T)=A-\frac{B}{1+exp[C(T-D)]}}\cr\cr
-where \eqn{A}, \eqn{B}, \eqn{C}, \eqn{D} are positive parameters to be optimized.\cr
+The \strong{background} will be subtracted using the following expression if \code{subBG=TRUE} (Horowitz and Yossian, 1995; Kitis et al., 2012)\cr\cr
+\eqn{I(T)=A+Bexp(\frac{T}{C})}\cr\cr
+where \eqn{A}, \eqn{B}, and \eqn{C} are positive parameters to be optimized.\cr
 
 The procedure minimizes the objective:
 \eqn{fcn=\sum_{i=1}^n |y_i^o-y_i^f|, i=1,...,n}
@@ -182,10 +194,10 @@ generated \bold{Dialog Table} if \code{edit.inis=TRUE}:\cr
 \bold{(1)} \code{INTENS[min,max,ini,fix]}: lower and upper bounds, starting and fixing values of \eqn{I_m} \cr
 \bold{(2)} \code{ENERGY[min,max,ini,fix]}: lower and upper bounds, starting and fixing values of \eqn{E} \cr
 \bold{(3)} \code{TEMPER[min,max,ini,fix]}: lower and upper bounds, starting and fixing values of \eqn{T_m} \cr
-\bold{(4)} \code{bValue[min,max,ini,fix]}: lower and upper bounds, starting and fixing values of \eqn{b} in a general-order model\cr
-\bold{(5)} \code{rValue[min,max,ini,fix]}: lower and upper bounds, starting and fixing values of \eqn{R} in the Lambert W (Wright Omega) function model\cr
-\bold{(6)} \code{aValue[min,max,ini,fix]}: lower and upper bounds, starting and fixing values of \eqn{\alpha} in a mixed-order model\cr
-\bold{(7)} \code{BG[min,max,ini,fix]}: lower and upper bounds, starting and fixing values of background parameters \eqn{A}, \eqn{B}, \eqn{C}, and \eqn{D}\cr
+\bold{(4)} \code{bValue[min,max,ini,fix]}: lower and upper bounds, starting and fixing values of \eqn{b} in the general-order model\cr
+\bold{(5)} \code{rValue[min,max,ini,fix]}: lower and upper bounds, starting and fixing values of \eqn{R} in the OTOR model\cr
+\bold{(6)} \code{aValue[min,max,ini,fix]}: lower and upper bounds, starting and fixing values of \eqn{\alpha} in the mixed-order model\cr
+\bold{(7)} \code{BG[min,max,ini,fix]}: lower and upper bounds, starting and fixing values of background parameters \eqn{A}, \eqn{B}, and \eqn{C}\cr
 }
 
 \value{
@@ -210,8 +222,14 @@ Nuclear and Instruments Methods, 145: 389-395.
 Bos AJJ, Piters TM, Gomez-Ros JM, Delgado A, 1993a. An intercomparison of glow curve analysis computer programs. 
 IRI-CIEMAT Report, 131-93-005.
 
-Gomez-Ros JM, Kitis G., 2002. Computerised glow curve deconvolution using general and mixed order kinetics. 
+Gomez-Ros JM, Kitis G, 2002. Computerised glow curve deconvolution using general and mixed order kinetics. 
 Radiation Protection Dosimetry, 101(1-4): 47-52.
+
+Horowitz YS, Yossian D, 1995. Computerized glow curve deconvolution: application to thermoluminescence dosimetry. 
+Radiation Protection Dosimetry, 60: 1-114.
+
+Kitis G, Carinou E, Askounis P, 2012. Glow-curve de-convolution analysis of TL glow-curve from constant temperature hot gas TLD readers.
+Radiation Measurements, 47: 258-265.
 
 Kitis G, Gomes-Ros JM, 2000. Thermoluminescence glow-curve deconvolution functions for mixed order of kinetics and continuous trap distribution. 
 Nuclear Instruments and Methods in Physics Research A, 440: 224-231.
@@ -221,6 +239,9 @@ Journal of Physics D: Applied Physics, 31(19): 2636-2641.
 
 Kitis G, Pagonis V, 2019. On the resolution of overlapping peaks in complex thermoluminescence glow curves. 
 Nuclear Instruments and Methods in Physics Research, A, 913: 78-84.
+
+Kitis G, Polymeris GS, Pagonis V, 2019. Stimulated luminescence emission: From phenomenological models to master analytical equations. 
+Applied Radiation and Isotopes, 153: 108797.
 
 Kitis G, Polymeris GS, Sfampa IK, Prokic M, Meric N, Pagonis V, 2016. Prompt isothermal decay of thermoluminescence in MgB4O7:Dy, Na and LiB4O7:Cu, In dosimeters. 
 Radiation Measurements, 84: 15-25.
@@ -239,7 +260,8 @@ Radiation Protection Dosimetry, 95(3): 225-229.
 Sadek AM, Eissa HM, Basha AM, Carinou E, Askounis P, Kitis G, 2015. The deconvolution of thermoluminescence glow-curves using general expressions 
 derived from the one trap-one recombination (OTOR) level model. Applied Radiation and Isotopes, 95: 214-221.
 
-Singh LL, Gartia RK, 2013. Theoretical derivation of a simplified form of the OTOR/GOT differential equation. Radiation Measurements, 59: 160-164.
+Singh LL, Gartia RK, 2013. Theoretical derivation of a simplified form of the OTOR/GOT differential equation. 
+Radiation Measurements, 59: 160-164.
 
 Singh LL, Gartia RK, 2014. Glow-curve deconvolution of thermoluminescence curves in the simplified OTOR equation using the Hybrid Genetic Algorithm. 
 Nuclear Instruments and Methods in Physics Research B, 319: 39-43.
@@ -288,14 +310,17 @@ Radiation Protection Dosimetry, 1-10.
 Kiisk V, 2013. Deconvolution and simulation of thermoluminescence glow curves with Mathcad. 
 Radiation Protection Dosimetry, 156(3): 261-267.
 
-Kitis G, Pagonis V, 2019. On the resolution of overlapping peaks in complex thermoluminescence glow curves. 
-Nuclear Instruments and Methods in Physics Research, A,  913: 78-84.
-
 Pagonis V, Kitis G, Furetta C, 2006. Numerical and practical exercises in thermoluminescence. 
 Springer Science & Business Media. 
 
 Puchalska M, Bilski P, 2006. GlowFit-a new tool for thermoluminescence glow-curve deconvolution. 
 Radiation Measurements, 41(6): 659-664. 
+
+Sadek AM, 2013. Test of the accuracy of the computerized glow curve deconvolution algorithm for the analysis of thermoluminescence glow curves.
+Nuclear Instruments and Methods in Physics Research A, 712: 56-61.
+
+Sadek AM, Kitis G., 2018. Impact of non-fulfillment of the super position principle on the analysis of thermoluminescence glow-curve. 
+Radiation Measurements, 116: 14-23.
 
 Singh TB, Rey L, Gartia RK, 2011. Applications of PeakFit software in thermoluminescence studies. 
 Indian Journal of Pure & Applied Physics, 49: 297-302.
@@ -314,8 +339,10 @@ The user is advocated to use \code{mwt}, \code{mdt}, and \code{mr} to specify th
 the allowed minimum distance, and the allowed minimum resolution respectively to resolve seriously overlapped glow peaks during the trial-and-error protocol.\cr
 
 Adrie J.J. Bos is appreciated for providing the reference glow curves of the GLOCANIN project to test this routine.\cr
+
 Amr M. Sadek is thanked for providing the Matlab code implementing the Lambert W (Wright Omega) function for reference.\cr
-The author whould like to appreciate George Kitis, who gave some useful suggestions to improve the program and provided many experimentally measured thermoluminescence glow curves to check the routine.\cr
+
+George Kitis is appreciated for giving some useful suggestions to improve the program and providing many experimentally measured thermoluminescence glow curves to check the routine.\cr
 }
 
 \seealso{
@@ -328,7 +355,7 @@ The author whould like to appreciate George Kitis, who gave some useful suggesti
   data(Kitis)
 
 # (1) Deconvolution of a glow curve using 4 peaks (no background subtraction) with 
-#    the Lambert W (Wright Omega) function using specified initial kinetic parameters.
+#     the Wright Omega function using specified initial kinetic parameters.
 
   knPars <- 
   cbind(c(400, 550, 850, 1600), # Im
@@ -336,7 +363,7 @@ The author whould like to appreciate George Kitis, who gave some useful suggesti
         c(420, 460, 480, 510),  # Tm
         c(0.1, 0.1, 0.1, 0.1))  # R
 
-  dd1 <- tgcd(Refglow$x002, npeak=4, model="lw",
+  dd1 <- tgcd(Refglow$x002, npeak=4, model="wo",
               inisPAR=knPars, nstart=10, edit.inis=FALSE)
 
   head(dd1$comp.sig)
@@ -352,7 +379,7 @@ The author whould like to appreciate George Kitis, who gave some useful suggesti
         c(369.86, 400.69, 428.51,  482.41, 537.28),             # Tm
         c(0.75,  0.81, 0.92, 0.001, 0.29))                      # a
 
-  bgPars <- c(14201, 14121, 0.0176, 677.57)  # A, B, C, D.
+  bgPars <- c(1, 10, 100)  # A, B, C.
 
   dd2 <- tgcd(Kitis$x009, npeak=5, model="m1", subBG=TRUE, 
               inisPAR=knPars, inisBG=bgPars, nstart=10, edit.inis=FALSE)

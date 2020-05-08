@@ -1,14 +1,14 @@
 ###
 tgcd <-
-function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2", 
+function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2", 
          pickb="d0", nstart=60, kkf=0.03, mdt=NULL, mwt=NULL, 
          mr=NULL, edit.inis=TRUE, inisPAR=NULL, inisBG=NULL, 
          hr=NULL, hwd=NULL, pod=NULL, plot=TRUE, outfile=NULL)  {
     UseMethod("tgcd")
 } #
-### 2019.12.03.
+### 2020.05.08.
 tgcd.default <- 
-function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2", 
+function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2", 
          pickb="d0", nstart=60, kkf=0.03, mdt=NULL, mwt=NULL, 
          mr=NULL, edit.inis=TRUE, inisPAR=NULL, inisBG=NULL,  
          hr=NULL, hwd=NULL, pod=NULL, plot=TRUE, outfile=NULL)  {
@@ -18,7 +18,7 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
                   ###all(Sigdata[,2L,drop=TRUE]>=0),
                   length(npeak)==1L, is.numeric(npeak), 
                   npeak %in% seq(13L), 3L*npeak<nrow(Sigdata), 
-                  length(model)==1L, model %in% c("f1","f2","f3","s1","s2","g1","g2","g3","lw","m1","m2","m3"),
+                  length(model)==1L, model %in% c("f1","f2","f3","s1","s2","g1","g2","g3","lw","m1","m2","m3","wo"),
                   length(subBG)==1L, is.logical(subBG),
                   length(pickp)==1L, pickp %in% c("d0","d01","d1","d2","d3","d4"),
                   length(pickb)==1L, pickb %in% c("d0","d01"),
@@ -60,13 +60,13 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
             ###
             if(model %in% c("f1","f2","f3","s1","s2") && dim(inisPAR)[2L]!=3L) stop("Error: incorrect dimensions of inisPAR!")
             ### 
-            if(model %in% c("g1","g2","g3","lw","m1","m2","m3") && dim(inisPAR)[2L]!=4L) stop("Error: incorrect dimensions of inisPAR!")
+            if(model %in% c("g1","g2","g3","lw","m1","m2","m3","wo") && dim(inisPAR)[2L]!=4L) stop("Error: incorrect dimensions of inisPAR!")
             ###
             if (any(inisPAR<=0)) stop("Error: all elements in inisPAR should be larger than 0!")
         } # end if.
         ###
         if(!is.null(inisBG)) {
-           if (length(inisBG)!=4L) stop("Error: inisBG should be a 4-element numeric vector!")
+           if (length(inisBG)!=3L) stop("Error: inisBG should be a 3-element numeric vector!")
            ###
            if (any(inisBG<=0)) stop("Error: all elements in inisBG should be larger than 0!")
         } # end if.
@@ -146,7 +146,7 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
                      main=paste("Click the mouse to select ", npeak, " peak locations:", sep=""), cex.lab=1.3)
                 ###
                 scale_signal <- signal/max(signal)*max(dy_signal)
-                points(temp, scale_signal, type="l", col="red", lwd=1.0)
+                points(temp, scale_signal, type="l", col="red", lwd=1.2, lty="dashed")
                 ###
                 abline(h=0.0, col="purple", lwd=3.0, lty="dashed")
                 ###
@@ -199,7 +199,7 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
             ###
             plot(temp[abzero], signal[abzero], type="p", pch=21, cex=1.1, bg="grey70", xlab="Temperature (K)", 
                  cex.lab=1.3, log=ifelse(pickb=="d0","","y"), ylab="TL intensity (counts)", 
-                 main="Click the mouse to select 4 points for background initialization")
+                 main="Click the mouse to select 3 points for background initialization")
             ###
             drv <- 0L
             if (is.null(hwd)) hwd <- 3L*(drv+2L)
@@ -209,14 +209,16 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
             dy_signal <- try(savgol(y=signal,drv=drv,hwd=hwd,pod=pod),silent=TRUE)
             if (class(dy_signal)!="try-error") points(temp, dy_signal, type="l", col="skyblue3", lwd=3.0)
             ###
-            sldxyBG <- try(locator(n=4L), silent=TRUE)
+            sldxyBG <- try(locator(n=3L), silent=TRUE)
             if(class(sldxyBG)=="try-error") stop("Error: failed in automatical initilization of background parameters!")
             ###
             ###---------------------------------------------------------------------------
-            bgFUNC <- function(p,x,y) {
+            bgFUNC <- function(p,x,y,X,Y) {
                 p <- abs(p)
-                v <- sum((p[1L]-p[2L]/(1.0+exp(p[3L]*(x-p[4L])))-y)^2)
-                if (!is.finite(v)) { return(.Machine$double.xmax) } else { return(v) }
+                v <- sum((p[1L]+p[2L]*exp(x/p[3L])-y)^2)
+                if (!is.finite(v) || any(Y<p[1L]+p[2L]*exp(X/p[3L]))) { 
+                    return(.Machine$double.xmax) } else { 
+                    return(v) }
             } # end function bgFUNC.
             ###---------------------------------------------------------------------------
             ###
@@ -227,12 +229,11 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
                 ###
                 ba <- exp(runif(n=1L, min=log(1.0e-03),max=log(1.0e03)))
                 bb <- exp(runif(n=1L, min=log(1.0e-03),max=log(1.0e03)))
-                bc <- exp(runif(n=1L, min=log(1.0e-06),max=log(1.0e-01)))
-                bd <- runif(n=1L, min=min(temp),max=max(temp))
+                bc <- runif(n=1L, min=min(temp),max=max(temp))
                 ###
-                p <- c(ba,bb,bc,bd)
+                p <- c(ba,bb,bc)
                 ###
-                NLM <- try(nlm(f=bgFUNC, p=p, x=sldxyBG$x, y=sldxyBG$y), silent=TRUE)
+                NLM <- try(nlm(f=bgFUNC, p=p, x=sldxyBG$x, y=sldxyBG$y, X=temp, Y=signal), silent=TRUE)
                 ###
                 if (class(NLM)!="try-error" && NLM$minimum<minVAL) {
                     minVAL <- NLM$minimum
@@ -245,10 +246,9 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
             ba <- BGpar[1L]
             bb <- BGpar[2L]
             bc <- BGpar[3L]
-            bd <- BGpar[4L]
             ###
-            points(temp, ba-bb/(1.0+exp(bc*(temp-bd))), type="l", col="red", lwd=2.0, lty="dashed")
-            points(temp, signal-(ba-bb/(1.0+exp(bc*(temp-bd)))), type="l", col="purple", lwd=2.0)
+            points(temp, ba+bb*exp(temp/bc), type="l", col="red", lwd=2.0, lty="dashed")
+            points(temp, signal-(ba+bb*exp(temp/bc)), type="l", col="purple", lwd=2.0)
             ###
             Sys.sleep(3L)
             ###
@@ -276,8 +276,8 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
             ### Default activation energy.
             mat2[1L,]<- c("Peak", "ENERGY(min)", "ENERGY(max)", "ENERGY(ini)", "ENERGY(fix)")
             mat2[-1L,1L] <- paste(seq(npeak),"th-Peak", sep="")
-            mat2[-1L,2L] <- 0.001 
-            mat2[-1L,3L] <- 6.0
+            mat2[-1L,2L] <- 0.3 
+            mat2[-1L,3L] <- 4.0
             mat2[-1L,4L] <- if (is.null(inisPAR)) {round(runif(n=npeak,min=1.0, max=2.0), 3L)} else {round(inisPAR[,2L,drop=TRUE], 3L)} # end if.
             mat2[-1L,5L] <- FALSE
             ###
@@ -297,12 +297,14 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
                 mat4[-1L,3L] <- 2.0
                 mat4[-1L,4L] <- if (is.null(inisPAR)) {round(runif(n=npeak,min=1.01, max=1.99), 3L)} else {round(inisPAR[,4L,drop=TRUE], 3L)} # end if.
                 mat4[-1L,5L] <- FALSE
-            } else if(model=="lw") {
+            } else if(model %in% c("lw","wo")) {
                 mat4[1L,] <- c("Peak", "rValue(min)", "rValue(max)", "rValue(ini)","rValue(fix)")
                 mat4[-1L,1L] <- paste(seq(npeak),"th-Peak", sep="")
                 mat4[-1L,2L] <- 1.0e-16
-                mat4[-1L,3L] <-  0.8
-                mat4[-1L,4L] <- if (is.null(inisPAR)) {round(runif(n=npeak,min=0.01, max=0.5), 3L)} else {inisPAR[,4L,drop=TRUE]} # end if.
+                mat4[-1L,3L] <-  ifelse(model=="wo",0.99,2.0)
+                mat4[-1L,4L] <- if (is.null(inisPAR)) { if(model=="wo") round(runif(n=npeak,min=0.01, max=0.5), 3L) else 
+                                round(runif(n=npeak,min=0.01, max=1.5), 3L) } else { inisPAR[,4L,drop=TRUE] } # end if.
+                    
                 mat4[-1L,5L] <- FALSE
             } else if (model %in% c("m1","m2","m3")) {
                 mat4[1L,] <- c("Peak", "aValue(min)", "aValue(max)", "aValue(ini)","aValue(fix)")
@@ -315,12 +317,12 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
             ###
             ### Default parameters for inisBG.
             if (subBG==TRUE) {
-                mat5 <- as.data.frame(matrix(nrow=5L, ncol=5L))
+                mat5 <- as.data.frame(matrix(nrow=4L, ncol=5L))
                 ###
                 mat5[1L,] <- c("BG", "BG(min)", "BG(max)", "BG(ini)","BG(fix)")
-                mat5[-1L,1L] <- c("A","B","C","D")
-                mat5[-1L,2L] <- c(1.0e-09, 1.0e-09, 1.0e-09, 1.0e-09)
-                mat5[-1L,3L] <- c(1.0e+09, 1.0e+09, 1.0e+09, 1.0e+09)
+                mat5[-1L,1L] <- c("A","B","C")
+                mat5[-1L,2L] <- c(1.0e-09, 1.0e-09, 1.0e-09)
+                mat5[-1L,3L] <- c(1.0e+09, 1.0e+09, 1.0e+09)
                 mat5[-1L,4L] <- if (is.null(inisBG)) { BGpar } else { inisBG } # end if.
                 mat5[-1L,5L] <- FALSE
             } # end if.
@@ -330,7 +332,7 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
                 if (subBG==FALSE) mat <- rbind(mat1, rep("    ", 5L), mat2, rep("    ", 5L), mat3)
                 if (subBG==TRUE)  mat <- rbind(mat1, rep("    ", 5L), mat2, rep("    ", 5L), mat3, rep("    ", 5L), mat5)
                 ###
-            } else if (model %in% c("g1","g2","g3","lw","m1","m2","m3")) {
+            } else if (model %in% c("g1","g2","g3","lw","m1","m2","m3","wo")) {
                 ###
                 if (subBG==FALSE) mat <- rbind(mat1, rep("    ", 5L), mat2, rep("    ", 5L), mat3, rep("    ", 5L), mat4)  
                 if (subBG==TRUE)  mat <- rbind(mat1, rep("    ", 5L), mat2, rep("    ", 5L), mat3, rep("    ", 5L), mat4, rep("    ", 5L), mat5) 
@@ -438,11 +440,11 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
        ###
        ###
        ### 4. bValue, rValue, or aValue for the the glow peak. 
-       if (model %in% c("g1","g2","g3","lw","m1","m2","m3")) {
+       if (model %in% c("g1","g2","g3","lw","m1","m2","m3","wo")) {
            ###
            label <- if(model %in% c("g1","g2","g3")) {
                "bValue" 
-           } else if (model=="lw") {
+           } else if (model %in% c("lw","wo")) {
                "rValue" 
            } else if (model %in% c("m1","m2","m3")) {
                "aValue" 
@@ -480,9 +482,9 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
        if (subBG==TRUE) {
            ###
            if (model %in% c("f1","f2","f3","s1","s2"))  {
-               LLL <- npeak+1L+2L*(npeak+2L)+seq(from=3L,to=6L,by=1L)
-           } else if (model %in% c("g1","g2","g3","lw","m1","m2","m3")) {
-               LLL <- npeak+1L+3L*(npeak+2L)+seq(from=3L,to=6L,by=1L)
+               LLL <- npeak+1L+2L*(npeak+2L)+seq(from=3L,to=5L,by=1L)
+           } else if (model %in% c("g1","g2","g3","lw","m1","m2","m3","wo")) {
+               LLL <- npeak+1L+3L*(npeak+2L)+seq(from=3L,to=5L,by=1L)
            } # end if.
            ###
            ### Check non-fninte values.
@@ -512,21 +514,21 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
            BGpars2[fix_BGpars==TRUE] <- BGpars3[fix_BGpars==TRUE]
            ###   
        } else {
-           BGpars1 <- BGpars2 <- BGpars3 <- rep(0.0, 4L)
+           BGpars1 <- BGpars2 <- BGpars3 <- rep(0.0, 3L)
        } # end if.
        ##############################################################################
        ##############################################################################
        ###
        ###
        nd <- length(temp)
-       n2 <- ifelse(model %in% c("f1","f2","f3","s1","s2"), 3L*npeak+4L, 4L*npeak+4L)
+       n2 <- ifelse(model %in% c("f1","f2","f3","s1","s2"), 3L*npeak+3L, 4L*npeak+3L)
        fmin <- 0.0
        ###
        if (model %in% c("f1","f2","f3","s1","s2")) {
            lower <- c(intensity1, energy1, temperature1, BGpars1)
            upper <- c(intensity2, energy2, temperature2, BGpars2)
            pars <-  c(intensity3, energy3, temperature3, BGpars3)
-       } else if (model %in% c("g1","g2","g3","lw","m1","m2","m3")) {
+       } else if (model %in% c("g1","g2","g3","lw","m1","m2","m3","wo")) {
            lower <- c(intensity1, energy1, temperature1, bValue1, BGpars1)
            upper <- c(intensity2, energy2, temperature2, bValue2, BGpars2)
            pars <-  c(intensity3, energy3, temperature3, bValue3, BGpars3)
@@ -558,19 +560,21 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
        } else if (model=="g3") {
            6L
        } else if (model=="lw") {
-           7L
+           13L
        } else if (model=="m1") {
            8L
        } else if (model=="m2") {
            9L
        } else if (model=="m3") {
            10L
+       } else if (model=="wo") {
+           7L
        } # end if.
        ###
        bg <- ifelse(subBG==FALSE, 0L, 1L)
        ###
-       tlsig3 <- matrix(0.0, nrow=nd, ncol=(n2-4L)/3L+1L)
-       tlsig4 <- matrix(0.0, nrow=nd, ncol=(n2-4L)/4L+1L)
+       tlsig3 <- matrix(0.0, nrow=nd, ncol=(n2-3L)/3L+1L)
+       tlsig4 <- matrix(0.0, nrow=nd, ncol=(n2-3L)/4L+1L)
        ###
        suminfo <- rep(0L, 5L)
        message <- 0L
@@ -615,14 +619,14 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
        ###
        if (res$message!=0L) stop("Error: fail in glow curve deconvolution!")
        ###
-       pars <- matrix(res$pars[1L:(n2-4L)], ncol=ifelse(model %in% c("f1","f2","f3","s1","s2"),3L,4L))
+       pars <- matrix(res$pars[1L:(n2-3L)], ncol=ifelse(model %in% c("f1","f2","f3","s1","s2"),3L,4L))
        index <- order(pars[,3L,drop=TRUE], decreasing=FALSE)
        pars <- pars[index,,drop=FALSE]
        colnames(pars) <- if (model %in% c("f1", "f2","f3","s1","s2")) {
            c("INTENS(Im)", "ENERGY(E)", "TEMPER(Tm)")
        } else if (model %in% c("g1","g2","g3")) {
            c("INTENS(Im)", "ENERGY(E)", "TEMPER(Tm)", "bValue(b)")
-       } else if (model=="lw") {
+       } else if (model %in% c("lw","wo")) {
            c("INTENS(Im)", "ENERGY(E)", "TEMPER(Tm)", "rValue(r)")
        } else if (model %in% c("m1","m2","m3")) {
            c("INTENS(Im)", "ENERGY(E)", "TEMPER(Tm)", "aValue(a)")
@@ -630,8 +634,8 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
        rownames(pars) <- paste(seq(npeak),"th-Peak",sep="")
        ###
        if (subBG==TRUE) {
-           BGpars <- res$pars[(n2-3L):n2]
-           names(BGpars) <- c("A","B","C","D")
+           BGpars <- res$pars[(n2-2L):n2]
+           names(BGpars) <- c("A","B","C")
        } else {
            BGpars <- NULL
        } # end if.
@@ -641,7 +645,7 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
        ###
        if (model %in% c("f1","f2","f3","s1","s2")) {
            CompSig <- matrix(res$tlsig3, ncol=npeak+1L)
-       } else if (model %in% c("g1","g2","g3","lw","m1","m2","m3")) {
+       } else if (model %in% c("g1","g2","g3","lw","m1","m2","m3","wo")) {
            CompSig <- matrix(res$tlsig4, ncol=npeak+1L)
        } # end if.
        CompSig[,1L:npeak] <- CompSig[,index,drop=FALSE]
@@ -676,6 +680,14 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
                            as.double(engy), Am=as.double(Am), as.double(fmin), PACKAGE="tgcd")
            return(res$Am)
        } # end function calcAm.
+       ###
+       lambertW <- function(xx) {
+           v <- double(1L)
+           ner <- integer(1L)
+           res <- .Fortran("lambertW", as.double(xx), v=as.double(v), ner=as.integer(ner), PACKAGE="tgcd")
+           return(res$v)
+       } # end function lambertW.
+       ###
        ##################################################################################################
        ###
        ### Calculate shape parameters for glow peaks.
@@ -701,7 +713,7 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
        sp <- t(apply(CompSig[,-(npeak+1L),drop=FALSE], MARGIN=2L, calShape, temp))
        rownames(sp) <- paste(seq(npeak),"th-Peak",sep="")
        ###
-       maybewrongTmidx <- which(abs(pars[,3L]-sp[,3L])>=6.0)
+       maybewrongTmidx <- which(abs(pars[,3L]-sp[,3L])>=10.0)
        if (length(maybewrongTmidx)>=1L) {
            cat("Warning: significant inconsistency between Tm in [pars] and Tm in [sp] for glow peak(s)",maybewrongTmidx,"!\n")
        } # end if.
@@ -742,7 +754,7 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
                return(ff)
            } # end function calff_general.
            ###
-           calff_lw <- function(et)  {
+           calff_wo <- function(et)  {
                energy <- et[1L]
                temper <- et[2L]
                rv <- et[3L]
@@ -758,7 +770,7 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
                ###
                ff <- hr*energy/kbz/temper^2/exp(-energy/kbz/temper)/(1.0/(1.0-rv)*(1.0+2.0*wz1m)/(1.0+wz1m)^2)
                return(ff)             
-           } # end function calff_lw.
+           } # end function calff_wo.
            ###
            calff_mix1 <- function(et) {
                energy <- et[1L]
@@ -782,6 +794,34 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
                return(ff)
            } # end function calff_mix23.
            ###
+           calff_lw <- function(et)  {
+               energy <- et[1L]
+               temper <- et[2L]
+               rv <- et[3L]
+               ###
+               xi <- min(temp)
+               eivi <- calcEi(-energy/kbz/xi)
+               Feivi <- xi*exp(-energy/kbz/xi) + energy/kbz*eivi
+               eiv <- calcEi(-energy/kbz/temper)
+               ftem <- (temper*exp(-energy/kbz/temper) + energy/kbz*eiv) - Feivi
+               if (rv<1.0) {
+                   z1m <- rv/(1.0-rv) - log((1.0-rv)/rv) + energy*exp(energy/kbz/temper)/
+                          kbz/temper^2/(1.0-1.05*rv^1.26)*ftem
+                   wz1m <- wrightOmega(z1m)
+               } else {
+                   z1m <- abs(rv/(1.0-rv)) + log(abs((1.0-rv)/rv)) + energy*exp(energy/kbz/temper)/
+                          kbz/temper^2/(2.963-3.24*rv^(-0.74))*ftem
+                   if (exp(-z1m) < .Machine$double.xmin) {
+                       wz1m <- -z1m
+                   } else {
+                       wz1m <- lambertW(-exp(-z1m))
+                   } # end if.
+               } # end if.
+               ###
+               ff <- hr*energy/kbz/temper^2/exp(-energy/kbz/temper)/(1.0/(1.0-rv)*(1.0+2.0*wz1m)/(1.0+wz1m)^2)
+               return(ff)             
+           } # end function calff_lw.
+           ###
            ###
            if (model %in% c("f1","f2","f3")) {
                ff <- apply(pars[,-1L,drop=FALSE], MARGIN=1L, calff_first)
@@ -789,12 +829,14 @@ function(Sigdata, npeak, model="lw", subBG=FALSE, pickp="d2",
                ff <- apply(pars[,-1L,drop=FALSE], MARGIN=1L, calff_second)
            } else if (model %in% c("g1","g2","g3"))  {
                ff <- apply(pars[,-1L,drop=FALSE], MARGIN=1L, calff_general)
-           } else if (model=="lw") {
-               ff <- apply(pars[,-1L,drop=FALSE], MARGIN=1L, calff_lw)
+           } else if (model=="wo") {
+               ff <- apply(pars[,-1L,drop=FALSE], MARGIN=1L, calff_wo)
            } else if (model=="m1") {
                ff <- apply(pars[,-1L,drop=FALSE], MARGIN=1L, calff_mix1)
            } else if (model %in% c("m2","m3")) {
                ff <- apply(pars[,-1L,drop=FALSE], MARGIN=1L, calff_mix23)
+           } else if (model=="lw") {
+               ff <- apply(pars[,-1L,drop=FALSE], MARGIN=1L, calff_lw)
            } # end if.
            ### 
        } else {

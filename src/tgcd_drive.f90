@@ -38,15 +38,16 @@ subroutine tgcd_drive(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
 !                          9=mix-order (type 2),
 !                          10=mix-order (type 3),
 !                          11=weibull function,
-!                          12=logistic asymmetric function.
+!                          12=logistic asymmetric function;
+!                          13=LW function (both branches).
 !                     bg:: input, integer, subtract background or not,
 !                          0=no subtraction, 1=subtraction.
-! tlsig3(nd, (n2-4)/3+1):: output, real values, optimized TL signal values.
-! tlsig3(nd, (n2-4)/4+1):: output, real values, optimized TL signal values.
+! tlsig3(nd, (n2-3)/3+1):: output, real values, optimized TL signal values.
+! tlsig3(nd, (n2-3)/4+1):: output, real values, optimized TL signal values.
 !             suminfo(5):: output, integer values, a summary of error information.
 !                message:: output, integer, error message: 0=success, 1=failure.
 !----------------------------------------------------------------------------------
-! Author:: Peng Jun, 2019.03.27.
+! Author:: Peng Jun, 2020.05.08.
 !----------------------------------------------------------------------------------
 ! Dependence:: subroutine tgcd_frt; 
 !              subroutine tgcd_nonfrt.
@@ -56,7 +57,7 @@ subroutine tgcd_drive(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
     real   (kind=8), intent(in):: xd(nd), yd(nd), mdt, mwt, mr, kkf
     real   (kind=8), intent(in):: lower(n2), upper(n2)
     real   (kind=8), intent(inout):: pars(n2)
-    real   (kind=8), intent(out):: fmin, tlsig3(nd,(n2-4)/3+1), tlsig4(nd,(n2-4)/4+1)
+    real   (kind=8), intent(out):: fmin, tlsig3(nd,(n2-3)/3+1), tlsig4(nd,(n2-3)/4+1)
     integer(kind=4), intent(out):: suminfo(5), message
     !
     if (tp==1 .or. tp==2 .or. tp==3 .or. tp==11 .or. tp==12) then
@@ -65,7 +66,7 @@ subroutine tgcd_drive(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
                       mdt,mwt,mr,alw,kkf,ggt,tp,bg,tlsig3,suminfo,message)
         tlsig4 = -99.0
         !
-    else if (tp==4 .or. tp==5 .or. tp==6 .or. tp==7 .or. tp==8 .or. tp==9 .or. tp==10) then
+    else if (tp==4 .or. tp==5 .or. tp==6 .or. tp==7 .or. tp==8 .or. tp==9 .or. tp==10 .or. tp==13) then
         !
         call tgcd_nonfrt(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
                          mdt,mwt,mr,alw,kkf,ggt,tp,bg,tlsig4,suminfo,message)

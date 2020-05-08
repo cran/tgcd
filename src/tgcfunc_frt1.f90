@@ -6,7 +6,7 @@ subroutine tgcfunc_frt1(nd,n2,pars,fvec,iflag,&
 ! according to first-order kinetic (type 1).
 !----------------------------------------------------------
 !        nd:: input, integer, number of data points.
-!        n2:: input, integer, number of pars (<=39+4).
+!        n2:: input, integer, number of pars (<=39+3).
 !  pars(n2):: input, real values, pars.
 !  fvec(nd):: output, real values, residuals.
 !     iflag:: input, integer, working variable.
@@ -17,7 +17,7 @@ subroutine tgcfunc_frt1(nd,n2,pars,fvec,iflag,&
 !        bg:: input, integer, subtract background or not,
 !             0=no subtraction, 1=subtraction.
 !----------------------------------------------------------
-! Author:: Peng Jun, 2019.03.24.
+! Author:: Peng Jun, 2020.05.08.
 !----------------------------------------------------------
 ! Dependence:: NO.
 !----------------------------------------------------------
@@ -31,8 +31,8 @@ subroutine tgcfunc_frt1(nd,n2,pars,fvec,iflag,&
                  a1=8.6347608925, a2=18.059016973, a3=8.5733287401, &
                  b0=3.9584969228, b1=21.0996530827, b2=25.6329561486, &
                  b3=9.5733223454
-    real   (kind=8):: xx(39+4), maxi, engy, maxt, xa, fxa, xb(nd), fxb(nd),&
-                      ba, bb, bc, bd
+    real   (kind=8):: xx(39+3), maxi, engy, maxt, xa, fxa, xb(nd), fxb(nd),&
+                      ba, bb, bc
     integer(kind=4):: i, n0
     !
     ! Bound constraints.
@@ -44,7 +44,7 @@ subroutine tgcfunc_frt1(nd,n2,pars,fvec,iflag,&
         end if
     end do
     !
-    n0 = n2 - 4
+    n0 = n2 - 3
     !
     xx = 0.0
     xx(1:n2) = pars(1:n2)
@@ -56,9 +56,8 @@ subroutine tgcfunc_frt1(nd,n2,pars,fvec,iflag,&
         ba = xx(n0+1)
         bb = xx(n0+2)
         bc = xx(n0+3)
-        bd = xx(n0+4)
         !
-        fvec = ba-bb/(1.0+exp(bc*(xd-bd)))
+        fvec = ba + bb * exp(xd/bc)
     end if
     !
     do i=1, n0/3
