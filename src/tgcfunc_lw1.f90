@@ -17,7 +17,7 @@ subroutine tgcfunc_lw1(nd,n2,pars,fvec,iflag,&
 !        bg:: input, integer, subtract background or not,
 !             0=no subtraction, 1=subtraction.
 !--------------------------------------------------------
-! Author:: Peng Jun, 2020.05.08.
+! Author:: Peng Jun, 2020.06.06.
 !--------------------------------------------------------
 ! Dependence:: subroutine calcei; 
 !              subroutine wrightOmega;
@@ -96,7 +96,7 @@ subroutine tgcfunc_lw1(nd,n2,pars,fvec,iflag,&
             else 
                 ! Approach use log function.
                 if (exp(-z1v(j)) < tinyv) then
-                    wz1v(j) = -z1v(j)
+                    wz1v(j) = -z1v(j) - log(z1v(j))
                 else 
                     ! Calculate use lambertW.
                     call lambertW(-exp(-z1v(j)), wv, ner)
@@ -131,7 +131,7 @@ subroutine tgcfunc_lw1(nd,n2,pars,fvec,iflag,&
         else 
             ! Approach use log function.
             if (exp(-z1m) < tinyv) then
-                wz1m = -z1m
+                wz1m = -z1m - log(z1m)
             else 
                 ! Calculate use lambertW.
                 call lambertW(-exp(-z1m), wv, ner)

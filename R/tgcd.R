@@ -6,7 +6,7 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
          hr=NULL, hwd=NULL, pod=NULL, plot=TRUE, outfile=NULL)  {
     UseMethod("tgcd")
 } #
-### 2020.05.08.
+### 2020.06.06.
 tgcd.default <- 
 function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2", 
          pickb="d0", nstart=60, kkf=0.03, mdt=NULL, mwt=NULL, 
@@ -95,6 +95,8 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
         ###
         ### Temperature and signal values.
         temp <- as.numeric(Sigdata[,1L,drop=TRUE])
+        if (min(temp)<273.0) cat("Warning: the minimum temperature is smaller than 273 K!\n")
+        ###
         signal <- as.numeric(Sigdata[,2L,drop=TRUE])
         ###
         ###
@@ -223,13 +225,13 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
             ###---------------------------------------------------------------------------
             ###
             minVAL <- .Machine$double.xmax
-            ntrial <- 6000L
+            ntrial <- 600L
             ###
             for (i in seq(ntrial)) {
                 ###
                 ba <- exp(runif(n=1L, min=log(1.0e-03),max=log(1.0e03)))
                 bb <- exp(runif(n=1L, min=log(1.0e-03),max=log(1.0e03)))
-                bc <- runif(n=1L, min=min(temp),max=max(temp))
+                bc <- runif(n=1L, min=10.0,max=max(temp))
                 ###
                 p <- c(ba,bb,bc)
                 ###
@@ -301,15 +303,15 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
                 mat4[1L,] <- c("Peak", "rValue(min)", "rValue(max)", "rValue(ini)","rValue(fix)")
                 mat4[-1L,1L] <- paste(seq(npeak),"th-Peak", sep="")
                 mat4[-1L,2L] <- 1.0e-16
-                mat4[-1L,3L] <-  ifelse(model=="wo",0.99,2.0)
+                mat4[-1L,3L] <-  ifelse(model=="wo",0.93,2.0)
                 mat4[-1L,4L] <- if (is.null(inisPAR)) { if(model=="wo") round(runif(n=npeak,min=0.01, max=0.5), 3L) else 
-                                round(runif(n=npeak,min=0.01, max=1.5), 3L) } else { inisPAR[,4L,drop=TRUE] } # end if.
+                                round(runif(n=npeak,min=0.01, max=1.9), 3L) } else { inisPAR[,4L,drop=TRUE] } # end if.
                     
                 mat4[-1L,5L] <- FALSE
             } else if (model %in% c("m1","m2","m3")) {
                 mat4[1L,] <- c("Peak", "aValue(min)", "aValue(max)", "aValue(ini)","aValue(fix)")
                 mat4[-1L,1L] <- paste(seq(npeak),"th-Peak", sep="")
-                mat4[-1L,2L] <- 1.0e-16
+                mat4[-1L,2L] <- 1.0e-7
                 mat4[-1L,3L] <-  0.9999999
                 mat4[-1L,4L] <- if (is.null(inisPAR)) {round(runif(n=npeak,min=0.01, max=0.99), 3L)} else {inisPAR[,4L,drop=TRUE]} # end if.
                 mat4[-1L,5L] <- FALSE
@@ -812,7 +814,7 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
                    z1m <- abs(rv/(1.0-rv)) + log(abs((1.0-rv)/rv)) + energy*exp(energy/kbz/temper)/
                           kbz/temper^2/(2.963-3.24*rv^(-0.74))*ftem
                    if (exp(-z1m) < .Machine$double.xmin) {
-                       wz1m <- -z1m
+                       wz1m <- -z1m - log(z1m)
                    } else {
                        wz1m <- lambertW(-exp(-z1m))
                    } # end if.

@@ -1,8 +1,8 @@
 Package: tgcd
 Type: Package
 Title: Thermoluminescence Glow Curve Deconvolution
-Version: 2.4
-Date: 2020-05-08
+Version: 2.5
+Date: 2020-06-06
 Author: Jun Peng [aut, cre],
   John Burkardt [ctb],
   Jorge More [ctb],
@@ -42,7 +42,7 @@ License: GPL-2 | GPL-3
 Depends: R (>= 3.0.1)
 Imports: graphics, stats, utils
 URL: https://CRAN.R-project.org/package=tgcd
-Packaged: 2020-05-08 13:26:30 UTC; pengjun
+Packaged: 2020-06-06 02:19:36 UTC; pengjun
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2020-05-08 14:10:03 UTC
+Date/Publication: 2020-06-06 06:20:03 UTC
