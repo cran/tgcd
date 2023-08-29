@@ -1,11 +1,22 @@
 citHeader("To cite package tgcd in publications use:")
 
-citEntry(entry="Article",
-         title = "tgcd: An R package for analyzing thermoluminescence glow curves",
-         author = personList(as.person("Peng J"),
-         as.person("Dong ZB"),
-         as.person("Han FQ")),
-	 journal = "SoftwareX",
-         year = 2016,
-         DOI = "10.1016/j.softx.2016.06.001",
-         textVersion = "Peng J, Dong ZB, Han FQ, 2016. tgcd: An R package for analyzing thermoluminescence glow curves. SoftwareX, 5: 112-120.")
+citation(auto=meta)
+
+  bibentry(bibtype = "Article",
+	   title = "tgcd: An R package for analyzing thermoluminescence glow curves",
+           author = "Jun Peng and Zhi Bao Dong and Feng Qing Han",
+           year = "2016",
+	   journal = "SoftwareX",
+	   volume = "5",
+	   pages = "112-120",
+	   doi = "10.1016/j.softx.2016.06.001")
+
+  bibentry(bibtype = "Article",
+	   title = "Thermoluminescence glow-curve deconvolution using analytical expressions: A unified presentation",
+           author = "Jun Peng and George Kitis and Amr M. Sadek and Eren C. Karsu Asal and Zhen Guo Li",
+           year = "2021",
+	   journal = "Applied Radiation and Isotopes",
+	   volume = "168",
+	   pages = "109440",
+	   doi = "10.1016/j.apradiso.2020.109440")
+

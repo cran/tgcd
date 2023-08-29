@@ -9,8 +9,8 @@ Package for thermoluminescence glow curve deconvolution (tgcd) and glow peak sim
 \tabular{ll}{
 Package: \tab tgcd\cr
 Type: \tab Package\cr
-Version: \tab 2.5\cr
-Date: \tab 2020-06-06\cr
+Version: \tab 2.6\cr
+Date: \tab 2023-08-29\cr
 License: \tab  GPL-2 | GPL-3 \cr
 }
 }
@@ -31,6 +31,9 @@ R package numOSL
 }
 \references{
 Peng J, Dong ZB, Han FQ, 2016. tgcd: An R package for analyzing thermoluminescence glow curves. SoftwareX, 5: 112-120.
+
+Peng J, Kitis G, Sadek AM, Karsu Asal EC, Li, ZG, 2021. Thermoluminescence glow-curve deconvolution using analytical
+expressions: A unified presentation. Applied Radiation and Isotopes, 168: 109440.
 }
 \keyword{Thermoluminescence}
 \keyword{Glow curve}

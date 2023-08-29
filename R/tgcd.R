@@ -1,14 +1,14 @@
 ###
 tgcd <-
-function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2", 
+function(Sigdata, npeak, model="g1", subBG=FALSE, pickp="d2", 
          pickb="d0", nstart=60, kkf=0.03, mdt=NULL, mwt=NULL, 
          mr=NULL, edit.inis=TRUE, inisPAR=NULL, inisBG=NULL, 
          hr=NULL, hwd=NULL, pod=NULL, plot=TRUE, outfile=NULL)  {
     UseMethod("tgcd")
 } #
-### 2020.06.06.
+### 2023.08.29.
 tgcd.default <- 
-function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2", 
+function(Sigdata, npeak, model="g1", subBG=FALSE, pickp="d2", 
          pickb="d0", nstart=60, kkf=0.03, mdt=NULL, mwt=NULL, 
          mr=NULL, edit.inis=TRUE, inisPAR=NULL, inisBG=NULL,  
          hr=NULL, hwd=NULL, pod=NULL, plot=TRUE, outfile=NULL)  {
@@ -100,6 +100,14 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
         signal <- as.numeric(Sigdata[,2L,drop=TRUE])
         ###
         ###
+        if ( is.null(inisPAR) ||  (subBG==TRUE && is.null(inisBG)) || plot==TRUE) {
+            ###
+            opar <- par("mfrow", "mar")
+            on.exit(par(opar))
+            ###
+        } # end if.
+        ###
+        ###
         ### If it is NULL the argument inisPAR, starting parameters need be initlized manually.
         if(is.null(inisPAR))  {
             ###
@@ -119,7 +127,7 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
                 if (is.null(pod)) pod <- 4L
                 ###
                 dy_signal <- try(savgol(y=signal,drv=drv,hwd=hwd,pod=pod),silent=TRUE)
-                if (class(dy_signal)!="try-error") points(temp[abzero], dy_signal[abzero], type="l", col="skyblue3", lwd=5)
+                if (inherits(dy_signal, what="try-error")==FALSE) points(temp[abzero], dy_signal[abzero], type="l", col="skyblue3", lwd=5)
                 ###
             } else if (pickp %in% c("d1","d2","d3","d4")) {
                 ###
@@ -142,7 +150,7 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
                 if (is.null(pod)) pod <- 4L
                 ###
                 dy_signal <- try(savgol(y=signal,drv=drv,hwd=hwd,pod=pod),silent=TRUE)
-                if (class(dy_signal)=="try-error") stop("Error: failed in derivative calculation!")
+                if (inherits(dy_signal, what="try-error")==TRUE) stop("Error: failed in derivative calculation!")
                 ###
                 plot(temp, dy_signal, type="l", col="skyblue3", lwd=5.0, xlab="Temperature (K)", ylab=YLAB, 
                      main=paste("Click the mouse to select ", npeak, " peak locations:", sep=""), cex.lab=1.3)
@@ -157,7 +165,7 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
             grid(col="darkviolet", lwd=1.0)
             ###
             sldxy <- try(locator(n=npeak), silent=TRUE)
-            if(class(sldxy)=="try-error") stop("Error: failed in manual initilization of kinetic parameters!")
+            if(inherits(sldxy, what="try-error")==TRUE) stop("Error: failed in manual initilization of kinetic parameters!")
             ###
             ###
             sldxy_index <- order(sldxy$x, decreasing=FALSE)
@@ -174,7 +182,7 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
             #} # end if
             ###
             linear_interp <- suppressWarnings(try(approx(x=temp, y=signal, xout=sldxy$x),silent=TRUE))
-            if (class(linear_interp)=="try-error" || !is.finite(linear_interp$y)) {
+            if (inherits(linear_interp, what="try-error")==TRUE || !is.finite(linear_interp$y)) {
                 stop("Error: failed in linear interpolation to obtain intensity (Im) by using temperature (Tm)!")
             } # end if.
             sldxy$y <- linear_interp$y
@@ -209,10 +217,10 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
             if (is.null(pod)) pod <- 4L
             ###
             dy_signal <- try(savgol(y=signal,drv=drv,hwd=hwd,pod=pod),silent=TRUE)
-            if (class(dy_signal)!="try-error") points(temp, dy_signal, type="l", col="skyblue3", lwd=3.0)
+            if (inherits(dy_signal, what="try-error")==FALSE) points(temp, dy_signal, type="l", col="skyblue3", lwd=3.0)
             ###
             sldxyBG <- try(locator(n=3L), silent=TRUE)
-            if(class(sldxyBG)=="try-error") stop("Error: failed in automatical initilization of background parameters!")
+            if(inherits(sldxyBG, what="try-error")==TRUE) stop("Error: failed in automatical initilization of background parameters!")
             ###
             ###---------------------------------------------------------------------------
             bgFUNC <- function(p,x,y,X,Y) {
@@ -237,7 +245,7 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
                 ###
                 NLM <- try(nlm(f=bgFUNC, p=p, x=sldxyBG$x, y=sldxyBG$y, X=temp, Y=signal), silent=TRUE)
                 ###
-                if (class(NLM)!="try-error" && NLM$minimum<minVAL) {
+                if (inherits(NLM, what="try-error")==FALSE && NLM$minimum<minVAL) {
                     minVAL <- NLM$minimum
                     BGpar <- abs(NLM$estimate)
                 } # end if.
@@ -344,7 +352,7 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
             ###
             if (edit.inis==TRUE) {
                 pars <- try(edit(name=mat), silent=TRUE)
-                if (class(pars)=="try-error") stop("Error: incorrect modification of initial parameters!")
+                if (inherits(pars, what="try-error")==TRUE) stop("Error: incorrect modification of initial parameters!")
             } else {
                 pars <- mat
             } # end if.
@@ -701,9 +709,9 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
            T1 <- suppressWarnings(try(approx(x=y[1L:maxloc], y=x[1L:maxloc], xout=hmaxval)$y, silent=TRUE))
            T2 <- suppressWarnings(try(approx(x=y[maxloc:ny], y=x[maxloc:ny], xout=hmaxval)$y, silent=TRUE))
            ###
-           if (class(T1)!="try-error") { d1 <- Tm-T1 } else { T1 <- d1 <- NA } # end if.
+           if (inherits(T1, what="try-error")==FALSE) { d1 <- Tm-T1 } else { T1 <- d1 <- NA } # end if.
            ###
-           if (class(T2)!="try-error") { d2 <- T2-Tm } else { T2 <- d2 <- NA } # end if.  
+           if (inherits(T2, what="try-error")==FALSE) { d2 <- T2-Tm } else { T2 <- d2 <- NA } # end if.  
            ###          
            thw <- T2-T1
            sf <- d2/thw
@@ -848,8 +856,6 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
        ###
        ### Plot the results.
        if (plot==TRUE) {
-           opar <- par("mfrow", "mar")
-           on.exit(par(opar))
            ###
            layout(cbind(c(rep(1,13), 2, rep(3,6)), c(rep(1,13), 2, rep(3,6))))
            ###
@@ -870,17 +876,17 @@ function(Sigdata, npeak, model="wo", subBG=FALSE, pickp="d2",
            ###
            if (subBG==FALSE) {
                legend(ifelse(temp[which.max(signal)]>XaxisCentral,"topleft","topright"),
-                      legend=c("Fitted.Curve", paste(seq(npeak),"th-Peak",sep="")), 
-                      col=c("black", lineCol[seq(npeak)]), pch=c(21, rep(NA,npeak)),
-                      lty=rep("solid",npeak), yjust=2, ncol=1, cex=2.0, bty="o", 
+                      legend=c("Fitted.Curve", paste(seq(npeak),"th-Peak",sep=""), paste("FOM=",round(FOM,2),"%",sep="")), 
+                      col=c("black", lineCol[seq(npeak)], NA), pch=c(21, rep(NA,npeak),NA),
+                      lty=c(rep("solid",npeak+1L),NA), yjust=2, ncol=1, cex=2.0, bty="o", 
                       lwd=2.0, pt.bg="white")
            } else {
                points(temp,CompSig[,npeak+1L,drop=TRUE], type="l", lwd=2, col="grey70")
                ###
                legend(ifelse(temp[which.max(signal)]>XaxisCentral,"topleft","topright"),
-                      legend=c("Fitted.Curve", paste(seq(npeak),"th-Peak",sep=""),"Background"), 
-                      col=c("black", lineCol[seq(npeak)], "grey70"), pch=c(21, rep(NA,npeak+1L)),
-                      lty=rep("solid",npeak), yjust=2, ncol=1, cex=2.0, bty="o", 
+                      legend=c("Fitted.Curve", paste(seq(npeak),"th-Peak",sep=""),"Background",paste("FOM=",round(FOM,2),"%",sep="")), 
+                      col=c("black", lineCol[seq(npeak)], "grey70", NA), pch=c(21, rep(NA,npeak+1L),NA),
+                      lty=c(rep("solid",npeak+2L),NA), yjust=2, ncol=1, cex=2.0, bty="o", 
                       lwd=2.0, pt.bg="white")
            } # end if.
            ###

@@ -8,14 +8,14 @@ Thermoluminescence glow curve deconvolution (tgcd)
 Thermoluminescence glow curve deconvolution according to various first-order, second-order, general-order, and mixed-order empirical expressions.
 }
 \usage{
-tgcd(Sigdata, npeak, model = "wo", subBG = FALSE, pickp = "d2", 
+tgcd(Sigdata, npeak, model = "g1", subBG = FALSE, pickp = "d2", 
      pickb = "d0", nstart = 60, kkf = 0.03, mdt = NULL, mwt = NULL,  
      mr = NULL, edit.inis = TRUE, inisPAR = NULL, inisBG = NULL, 
      hr = NULL, hwd = NULL, pod = NULL, plot = TRUE, outfile = NULL)
 }
 
 \arguments{
-\item{Sigdata}{\link{matrix}(\bold{required}): a \code{2}-column matrix, temperature values and thermoluminescence signal values are 
+\item{Sigdata}{\link{matrix}(\bold{required}): a \code{2}-column matrix, temperature values (in unit K) and thermoluminescence signal values are 
 stored in the first and second column, respectively}
 
 \item{npeak}{\link{integer}(\bold{required}): number of glow peaks, the allowed maximum number of glow peaks is set equal to 13}
@@ -146,9 +146,9 @@ where \eqn{\omega(x)} and \eqn{Ei(x)} are the wright Omega function and the expo
 \eqn{W(x)} and \eqn{W(-1,x)} are the principal and the second branches of the Lambert W function, respectively.
 The Fortran 90 subroutine used for evaluating the Wright Omega function is transformed from the Matlab code provided by Andrew Horchler (\url{https://github.com/horchler/wrightOmegaq}).
 The Fortran 90 subroutine (original Fortran 77 version by William Cody) used for evaluating the Lambert W function written by John Burkardt is available at 
-\url{http://people.sc.fsu.edu/~jburkardt/f_src/toms743/toms743.f90}. 
+\url{https://people.sc.fsu.edu/~jburkardt/f_src/toms743/toms743.f90}. 
 The Fortran 90 subroutine used for evaluating the exponential integral function is written by John Burkardt (original Fortran 77 version by William Cody) 
-(\url{http://people.sc.fsu.edu/~jburkardt/f_src/toms715/toms715.f90}).\cr
+(\url{https://people.sc.fsu.edu/~jburkardt/f_src/toms715/toms715.f90}).\cr
 
 \bold{Mixed-order} kinetic models introduce an extra parameter \eqn{\alpha=\frac{n_0}{n_0+M}} where \eqn{n_0} is the initial filled concentration of the active traps and \eqn{M}
 is the trap concentration of the thermally disconnected deep traps (Sunta et al., 2002). The four parameters describing a glow peak are: \eqn{I_m}, \eqn{E}, \eqn{T_m}, and \eqn{\alpha}.
@@ -179,8 +179,8 @@ The procedure minimizes the objective:
 where \eqn{y_i^o} and \eqn{y_i^f} denote the \emph{i-th} observed and fitted signal value, respectively, 
 and \eqn{n} indicates the number of data points.\cr
 
-The Levenberg-Marquardt algorithm (More, 1978) (\emph{minpack}: \url{http://netlib.org/minpack/}, original Fortran 77 version by Jorge More, Burton Garbow, Kenneth Hillstrom. 
-Fortran 90 version by John Burkardt \url{http://people.sc.fsu.edu/~jburkardt/f_src/minpack/minpack.f90}) was modified so as to supports constraints and fixes of parameters.
+The Levenberg-Marquardt algorithm (More, 1978) (\emph{minpack}: \url{https://netlib.org/minpack/}, original Fortran 77 version by Jorge More, Burton Garbow, Kenneth Hillstrom. 
+Fortran 90 version by John Burkardt \url{https://people.sc.fsu.edu/~jburkardt/f_src/minpack/minpack.f90}) was modified so as to supports constraints and fixes of parameters.
 A "trial-and-error" protocol with starting values generated uniformly around the given starting parameters \code{inisPAR} and \code{inisBG} is performed 
 repeatedly to search the optimal parameters that give a minimum Figure Of Merit (FOM) value (Balian and Eddy, 1977).\cr
 

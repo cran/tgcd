@@ -4,7 +4,7 @@ function(temps, n0, Nn, Ah, An, ff, ae,
          hr, outfile=NULL, plot=TRUE) {
     UseMethod("simqOTOR")
 } #
-### 2019.12.03.
+### 2023.08.28.
 simqOTOR.default <- 
 function(temps, n0, Nn, Ah, An, ff, ae,
          hr, outfile=NULL, plot=TRUE) {
@@ -76,7 +76,7 @@ function(temps, n0, Nn, Ah, An, ff, ae,
         ###
         XaxisCentral <- median(axTicks(side=1L))
         ###
-        if (class(sp)=="try-error")  {
+        if (inherits(sp, what="try-error")==TRUE)  {
             legend(ifelse(tout[which.max(yout)] > XaxisCentral, "topleft", 
                    "topright"), legend=c(paste("n0: ",
                    format(n0,digits=3,scientific=TRUE)," (1/cm^3)",sep=""),
@@ -111,7 +111,7 @@ function(temps, n0, Nn, Ah, An, ff, ae,
         box(lwd=2L)
     } # end if.
     ###
-    if (class(sp)=="try-error")  sp <- NULL
+    if (inherits(sp, what="try-error")==TRUE)  sp <- NULL
     ###
     if (!is.null(outfile))  {
         PeakSig <- cbind(tout, yout, res$vecy)

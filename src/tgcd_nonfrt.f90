@@ -41,7 +41,7 @@ subroutine tgcd_nonfrt(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
 !           suminfo(5):: output, integer values, a summary of error information.
 !              message:: output, integer, error message, 0=success, 1=failure.
 !--------------------------------------------------------------------------------
-! Author:: Peng Jun, 2020.05.08.
+! Author:: Peng Jun, 2023.08.28.
 !--------------------------------------------------------------------------------
 ! Dependence:: subroutine lmtl_all; 
 !              subroutine hpSort;
@@ -66,11 +66,13 @@ subroutine tgcd_nonfrt(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
     real   (kind=8):: ran(n2), ranpars(n2), pars0(n2), ranfmin, minfmin, unifa(n2), unifb(n2),&
                       orderTemp((n2-3)/4), mindist, maxwidth, minresol, resolvec((n2-3)/4-1),&
                       maty(nd,(n2-3)/4+1), matsp((n2-3)/4,7)
-    integer(kind=4):: i, j, info, indx((n2-3)/4), flag, icy, n0
+    integer(kind=4):: i, j, info, indx((n2-3)/4), flag, icy, n0, seed
     real   (kind=8), parameter:: ceof_a(9)=(/1.58, 1.766, 1.953, 2.141, 2.329,&
                                              2.519, 2.709,2.9,3.283/),&
                                  coef_x(9)=(/1.038,1.038,1.035,1.0325,1.0303,&
                                              1.0284,1.0267,1.0252,1.0226/)
+    !
+    seed = 123456789
     !
     n0 = n2 - 3
     !
@@ -238,7 +240,7 @@ subroutine tgcd_nonfrt(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
     !
     ! Try-and-error.
     TryError: do i=1,  nstart
-        call random_number(ran)
+        call r8vec_uniform_01(n2, seed, ran)
         ranpars = unifa + ran*(unifb-unifa)
         !
         ! Reset ENERGY if ggt==2.

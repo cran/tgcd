@@ -5,7 +5,7 @@ function(temps, n0, Nn=NULL, bv=NULL, ff,
          outfile=NULL,  plot=TRUE) {
     UseMethod("simPeak")
 } #
-### 2019.12.03.
+### 2023.08.28.
 simPeak.default <- 
 function(temps, n0, Nn=NULL, bv=NULL, ff, 
          ae, hr, typ=c("f", "s", "g"), 
@@ -113,7 +113,7 @@ function(temps, n0, Nn=NULL, bv=NULL, ff,
         ###
         XaxisCentral <- median(axTicks(side=1L))
         ###
-        if (class(sp)=="try-error")  {
+        if (inherits(sp, what="try-error")==TRUE)  {
             legend(ifelse(tout[which.max(yout)] > XaxisCentral, "topleft", 
                    "topright"), legend=c(paste("n0: ",
                    format(n0,digits=3,scientific=TRUE)," (1/cm^3)",sep=""),
@@ -144,7 +144,7 @@ function(temps, n0, Nn=NULL, bv=NULL, ff,
         box(lwd=2L)
     } # end if.
     ###
-    if (class(sp)=="try-error")  sp <- NULL
+    if (inherits(sp, what="try-error")==TRUE)  sp <- NULL
     ###
     if (!is.null(outfile))  {
         PeakSig <- cbind(tout, yout, res$vecy)

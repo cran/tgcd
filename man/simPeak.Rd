@@ -55,7 +55,7 @@ of trapped electrons, \eqn{S} the frequency factor, \eqn{E} the activation energ
 (kinetic order), and \eqn{\beta} the linear heating rate.
 
 The ordinary equation is solved by the Fortran 77 subroutine \emph{lsoda} (original version written by Linda R. Petzold and 
-Alan C. Hindmarsh available at Netlib: \url{http://www.netlib.org/odepack/}, modified version by R. Woodrow Setzer from the R package 
+Alan C. Hindmarsh available at Netlib: \url{https://www.netlib.org/odepack/}, modified version by R. Woodrow Setzer from the R package 
 \emph{deSolve} (Soetaert et al., 2010) available at CRAN: \url{https://CRAN.R-project.org/package=deSolve}).
 }
 
