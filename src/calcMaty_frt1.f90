@@ -12,23 +12,22 @@ subroutine calcMaty_frt1(nd,n2,pars,xd,maty,bg)
 !                  bg:: input, integer, subtract background or not,
 !                       0=no subtraction, 1=subtraction.
 !--------------------------------------------------------------------
-! Author:: Peng Jun, 2020.05.08.
+! Author:: Peng Jun, 2023.09.07.
 !--------------------------------------------------------------------
 ! Dependence:: NO.
 !--------------------------------------------------------------------
     ! Arguments.
     implicit none 
-    integer(kind=4), intent(in):: nd, n2, bg
-    real   (kind=8), intent(in):: pars(n2), xd(nd)
-    real   (kind=8), intent(out):: maty(nd,(n2-3)/3+1)    
+    integer, intent(in):: nd, n2, bg
+    real(kind(1.0d0)), intent(in):: pars(n2), xd(nd)
+    real(kind(1.0d0)), intent(out):: maty(nd,(n2-3)/3+1)    
     ! Local variables.
-    real   (kind=8), parameter:: kbz=8.617385e-5, a0=0.267773734, &
-                 a1=8.6347608925, a2=18.059016973, a3=8.5733287401, &
-                 b0=3.9584969228, b1=21.0996530827, b2=25.6329561486, &
-                 b3=9.5733223454
-    real   (kind=8):: xx(39+3), maxi, engy, maxt, xa, fxa, xb(nd), fxb(nd),&
-                      ba, bb, bc
-    integer(kind=4):: i, n0
+    real(kind(1.0d0)), parameter:: kbz=8.617385e-5, a0=0.267773734, &
+                                   a1=8.6347608925, a2=18.059016973, a3=8.5733287401, &
+                                   b0=3.9584969228, b1=21.0996530827, b2=25.6329561486, &
+                                   b3=9.5733223454
+    real(kind(1.0d0)):: xx(39+3), maxi, engy, maxt, xa, fxa, xb(nd), fxb(nd), ba, bb, bc
+    integer:: i, n0
     !
     n0 = n2 - 3
     !

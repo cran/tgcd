@@ -10,18 +10,18 @@ subroutine calcShape(nd,np,xd,maty,matsp,flag)
 ! matsp(np,7):: real value, output, calculated shape factors.
 !        flag:: integer, output, error flag, 0=success, 1=failure.
 !------------------------------------------------------------------------
-! Author:: Peng jun, 2019.03.26.
+! Author:: Peng jun, 2023.09.07.
 !------------------------------------------------------------------------
 ! Dependence:: No.
 !------------------------------------------------------------------------
     implicit none
-    integer(kind=4), intent(in):: nd, np
-    real   (kind=8), intent(in):: xd(nd), maty(nd,np)
-    real   (kind=8), intent(out):: matsp(np,7)
-    integer(kind=4), intent(out):: flag
+    integer, intent(in):: nd, np
+    real(kind(1.0d0)), intent(in):: xd(nd), maty(nd,np)
+    real(kind(1.0d0)), intent(out):: matsp(np,7)
+    integer, intent(out):: flag
     !
-    integer(kind=4):: i, j, indx, loc1
-    real   (kind=8):: yd(nd), hymax, T1, T2, x0, y0, x1, y1
+    integer:: i, j, indx, loc1
+    real(kind(1.0d0)):: yd(nd), hymax, T1, T2, x0, y0, x1, y1
     !  
     matsp= -99.0
     flag = 0

@@ -6,7 +6,7 @@ function(Sigdata, npeak, model="g1", subBG=FALSE, pickp="d2",
          hr=NULL, hwd=NULL, pod=NULL, plot=TRUE, outfile=NULL)  {
     UseMethod("tgcd")
 } #
-### 2023.08.29.
+### 2023.09.07.
 tgcd.default <- 
 function(Sigdata, npeak, model="g1", subBG=FALSE, pickp="d2", 
          pickb="d0", nstart=60, kkf=0.03, mdt=NULL, mwt=NULL, 
@@ -154,6 +154,7 @@ function(Sigdata, npeak, model="g1", subBG=FALSE, pickp="d2",
                 ###
                 plot(temp, dy_signal, type="l", col="skyblue3", lwd=5.0, xlab="Temperature (K)", ylab=YLAB, 
                      main=paste("Click the mouse to select ", npeak, " peak locations:", sep=""), cex.lab=1.3)
+                axis(side=2, col="skyblue3", lwd=3.9)
                 ###
                 scale_signal <- signal/max(signal)*max(dy_signal)
                 points(temp, scale_signal, type="l", col="red", lwd=1.2, lty="dashed")
@@ -182,7 +183,7 @@ function(Sigdata, npeak, model="g1", subBG=FALSE, pickp="d2",
             #} # end if
             ###
             linear_interp <- suppressWarnings(try(approx(x=temp, y=signal, xout=sldxy$x),silent=TRUE))
-            if (inherits(linear_interp, what="try-error")==TRUE || !is.finite(linear_interp$y)) {
+            if (inherits(linear_interp, what="try-error")==TRUE || any(!is.finite(linear_interp$y))) {
                 stop("Error: failed in linear interpolation to obtain intensity (Im) by using temperature (Tm)!")
             } # end if.
             sldxy$y <- linear_interp$y

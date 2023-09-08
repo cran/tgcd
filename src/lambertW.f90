@@ -6,17 +6,17 @@ subroutine lambertW(xx,v,ner)
 !   v:: output, real value, the calculated lambert-W value.
 ! ner:: output, integer, error message generated during the calcualtion, 0=success, 1=failed.
 !--------------------------------------------------------------------------------------------
-! Author:: Peng Jun, 2020.05.07.
+! Author:: Peng Jun, 2023.09.07.
 !--------------------------------------------------------------------------------------------
 ! Dependence:: function bisect.
 !--------------------------------------------------------------------------------------------
     implicit none
-    real   (kind=8), intent(in):: xx
-    real   (kind=8), intent(out):: v
-    integer(kind=4), intent(out):: ner
+    real(kind(1.0d0)), intent(in):: xx
+    real(kind(1.0d0)), intent(out):: v
+    integer, intent(out):: ner
     !
-    integer(kind=4):: nb, l
-    real   (kind=8):: bisect
+    integer:: nb, l
+    real(kind(1.0d0)):: bisect
     !
     nb = -1
     l = 2

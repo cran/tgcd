@@ -17,23 +17,23 @@ subroutine tgcfunc_frt1(nd,n2,pars,fvec,iflag,&
 !        bg:: input, integer, subtract background or not,
 !             0=no subtraction, 1=subtraction.
 !----------------------------------------------------------
-! Author:: Peng Jun, 2020.05.08.
+! Author:: Peng Jun, 2023.09.07.
 !----------------------------------------------------------
 ! Dependence:: NO.
 !----------------------------------------------------------
     ! Arguments.
     implicit none 
-    integer(kind=4):: nd, n2, iflag, bg
-    real   (kind=8):: pars(n2), lower(n2), upper(n2),&
-                      fvec(nd), xd(nd), yd(nd)                 
+    integer:: nd, n2, iflag, bg
+    real(kind(1.0d0)):: pars(n2), lower(n2), upper(n2),&
+                        fvec(nd), xd(nd), yd(nd)                 
     ! Local variables.
-    real   (kind=8), parameter:: kbz=8.617385e-5, a0=0.267773734, &
-                 a1=8.6347608925, a2=18.059016973, a3=8.5733287401, &
-                 b0=3.9584969228, b1=21.0996530827, b2=25.6329561486, &
-                 b3=9.5733223454
-    real   (kind=8):: xx(39+3), maxi, engy, maxt, xa, fxa, xb(nd), fxb(nd),&
-                      ba, bb, bc
-    integer(kind=4):: i, n0
+    real(kind(1.0d0)), parameter:: kbz=8.617385e-5, a0=0.267773734, &
+                       a1=8.6347608925, a2=18.059016973, a3=8.5733287401, &
+                       b0=3.9584969228, b1=21.0996530827, b2=25.6329561486, &
+                       b3=9.5733223454
+    real(kind(1.0d0)):: xx(39+3), maxi, engy, maxt, xa, fxa, xb(nd), fxb(nd),&
+                        ba, bb, bc
+    integer:: i, n0
     !
     ! Bound constraints.
     do i=1, n2

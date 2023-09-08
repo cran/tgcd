@@ -17,23 +17,23 @@ subroutine tgcfunc_lw(nd,n2,pars,fvec,iflag,&
 !        bg:: input, integer, subtract background or not,
 !             0=no subtraction, 1=subtraction.
 !--------------------------------------------------------
-! Author:: Peng Jun, 2020.05.08.
+! Author:: Peng Jun, 2023.09.07.
 !--------------------------------------------------------
 ! Dependence:: subroutine calcei; 
 !              subroutine wrightOmega.
 !--------------------------------------------------------
     ! Arguments.
     implicit none 
-    integer(kind=4):: nd, n2, iflag, bg
-    real   (kind=8):: pars(n2), lower(n2), upper(n2),&
-                      fvec(nd), xd(nd), yd(nd)               
+    integer:: nd, n2, iflag, bg
+    real(kind(1.0d0)):: pars(n2), lower(n2), upper(n2),&
+                        fvec(nd), xd(nd), yd(nd)               
     ! Local variables.
-    real   (kind=8), parameter:: kbz=8.617385e-5
-    real   (kind=8):: xx(52+3), maxi, engy, maxt, &
-                      rv, eiv, eivi, Feivi, ftev(nd), ftem, &
-                      z1v(nd), z1m, wz1v(nd), wz1m, xi, wv,&
-                      ba, bb, bc
-    integer(kind=4):: i, j, n0
+    real(kind(1.0d0)), parameter:: kbz=8.617385e-5
+    real(kind(1.0d0)):: xx(52+3), maxi, engy, maxt, &
+                        rv, eiv, eivi, Feivi, ftev(nd), ftem, &
+                        z1v(nd), z1m, wz1v(nd), wz1m, xi, wv,&
+                        ba, bb, bc
+    integer:: i, j, n0
     !
     ! Bound constraints.
     do i=1, n2

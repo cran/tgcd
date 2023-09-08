@@ -90,8 +90,8 @@ subroutine calcei ( arg, result, int )
 !
   implicit none
 
-  integer ( kind = 4 ) i,int
-  real ( kind = 8 ) &
+  integer i,int
+  real(kind(1.0d0)) &
     a,arg,b,c,d,exp40,e,ei,f,four,fourty,frac,half,one,p, &
     plg,px,p037,p1,p2,q,qlg,qx,q1,q2,r,result,s,six,sump, &
     sumq,t,three,twelve,two,two4,w,x,xbig,xinf,xmax,xmx0, &

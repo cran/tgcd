@@ -7,7 +7,7 @@ S3method(simPeak, default)
 S3method(simqOTOR, default)
 S3method(tgcd, default)
 
-importFrom(graphics, abline, axTicks, box, grid, layout, legend, locator, par, points)
+importFrom(graphics, abline, axTicks, box, grid, layout, legend, locator, par, points, axis)
 importFrom(stats, median, runif, approx, nlm, cor)
 importFrom(utils, edit, write.csv)
 

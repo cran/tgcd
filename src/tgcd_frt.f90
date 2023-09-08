@@ -38,10 +38,11 @@ subroutine tgcd_frt(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
 !           suminfo(5):: output, integer values, a summary of error information.
 !              message:: output, integer, error message: 0=success, 1=failure.                  
 !---------------------------------------------------------------------------------
-! Author:: Peng Jun, 2023.08.28.
+! Author:: Peng Jun, 2023.09.07.
 !---------------------------------------------------------------------------------
 ! Dependence:: subroutine lmtl_all; 
 !              subroutine hpSort;
+!              subroutine r8vec_uniform_01;
 !              subrontine calcShape;
 !              subroutine calcMaty_frt1;
 !              subroutine calcMaty_frt2;
@@ -50,21 +51,21 @@ subroutine tgcd_frt(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
 !              subroutine calcMaty_pdf2.
 !---------------------------------------------------------------------------------
     implicit none
-    integer(kind=4), intent(in):: nd, n2, nstart, alw(3), ggt, tpf, bg
-    real   (kind=8), intent(in):: xd(nd), yd(nd), mdt, mwt, mr, kkf
-    real   (kind=8), intent(in):: lower(n2), upper(n2)
-    real   (kind=8), intent(inout):: pars(n2)
-    real   (kind=8), intent(out):: fmin, tlsig(nd,(n2-3)/3+1)
-    integer(kind=4), intent(out):: suminfo(5), message
+    integer, intent(in):: nd, n2, nstart, alw(3), ggt, tpf, bg
+    real(kind(1.0d0)), intent(in):: xd(nd), yd(nd), mdt, mwt, mr, kkf
+    real(kind(1.0d0)), intent(in):: lower(n2), upper(n2)
+    real(kind(1.0d0)), intent(inout):: pars(n2)
+    real(kind(1.0d0)), intent(out):: fmin, tlsig(nd,(n2-3)/3+1)
+    integer, intent(out):: suminfo(5), message
     ! Local variables.
-    real   (kind=8):: ran(n2), ranpars(n2), pars0(n2), ranfmin, minfmin, unifa(n2), unifb(n2),&
-                      orderTemp((n2-3)/3), mindist, maxwidth, minresol, resolvec((n2-3)/3-1),&
-                      maty(nd,(n2-3)/3+1), matsp((n2-3)/3,7)
-    integer(kind=4):: i, j, info, indx((n2-3)/3), flag, icy, n0, seed
-    real   (kind=8), parameter:: ceof_a(9)=(/1.58, 1.766, 1.953, 2.141, 2.329,&
-                                             2.519, 2.709,2.9,3.283/),&
-                                 coef_x(9)=(/1.038,1.038,1.035,1.0325,1.0303,&
-                                             1.0284,1.0267,1.0252,1.0226/)
+    real(kind(1.0d0)):: ran(n2), ranpars(n2), pars0(n2), ranfmin, minfmin, unifa(n2), unifb(n2),&
+                        orderTemp((n2-3)/3), mindist, maxwidth, minresol, resolvec((n2-3)/3-1),&
+                        maty(nd,(n2-3)/3+1), matsp((n2-3)/3,7)
+    integer:: i, j, info, indx((n2-3)/3), flag, icy, n0, seed
+    real(kind(1.0d0)), parameter:: ceof_a(9)=(/1.58, 1.766, 1.953, 2.141, 2.329,&
+                                               2.519, 2.709,2.9,3.283/),&
+                                   coef_x(9)=(/1.038,1.038,1.035,1.0325,1.0303,&
+                                               1.0284,1.0267,1.0252,1.0226/)
     !
     seed = 123456789
     !

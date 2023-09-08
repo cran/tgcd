@@ -12,21 +12,21 @@ subroutine calcMaty_gnr2(nd,n2,pars,xd,maty,bg)
 !                  bg:: input, integer, subtract background or not,
 !                       0=no subtraction, 1=subtraction.
 !-----------------------------------------------------------------
-! Author:: Peng Jun, 2020.05.08.
+! Author:: Peng Jun, 2023.09.07.
 !-----------------------------------------------------------------
 ! Dependence:: subroutine calcFct.
 !-----------------------------------------------------------------
     ! Arguments.
     implicit none 
-    integer(kind=4), intent(in):: nd, n2, bg
-    real   (kind=8), intent(in):: pars(n2), xd(nd)
-    real   (kind=8), intent(out):: maty(nd,(n2-3)/4+1)                
+    integer, intent(in):: nd, n2, bg
+    real(kind(1.0d0)), intent(in):: pars(n2), xd(nd)
+    real(kind(1.0d0)), intent(out):: maty(nd,(n2-3)/4+1)                
     ! Local variables.
-    real   (kind=8), parameter:: kbz=8.617385e-5
-    real   (kind=8):: xx(52+3), maxi, engy, maxt, &
-                      bv, xa, xb(nd), expv(nd), fxa, fxb(nd),&
-                      ba, bb, bc
-    integer(kind=4):: i, j, n0
+    real(kind(1.0d0)), parameter:: kbz=8.617385e-5
+    real(kind(1.0d0)):: xx(52+3), maxi, engy, maxt, &
+                        bv, xa, xb(nd), expv(nd), fxa, fxb(nd),&
+                        ba, bb, bc
+    integer:: i, j, n0
     !
     n0 = n2 - 3
     !

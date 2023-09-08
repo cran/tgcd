@@ -32,7 +32,7 @@ subroutine lmtl_all(xd,yd,nd,pars,n2,fmin,&
 !        bg:: input, integer, subtract background or not,
 !             0=no subtraction, 1=subtraction.
 !------------------------------------------------------
-! Author:: Peng Jun, 2020.05.07.
+! Author:: Peng Jun, 2023.09.07.
 !------------------------------------------------------
 ! Dependence:: subroutine lmdif1; 
 !              subroutine tgcfunc_frt1;
@@ -50,16 +50,16 @@ subroutine lmtl_all(xd,yd,nd,pars,n2,fmin,&
 !              subroutine tgcfunc_lw1. 
 !------------------------------------------------------
     implicit none
-    integer(kind=4), intent(in):: nd, n2, tp, bg
-    real   (kind=8), intent(in):: xd(nd), yd(nd)
-    real   (kind=8), intent(in):: lower(n2), upper(n2)
-    real   (kind=8), intent(inout):: pars(n2)
-    real   (kind=8), intent(out):: fmin
-    integer(kind=4), intent(out):: message
+    integer, intent(in):: nd, n2, tp, bg
+    real(kind(1.0d0)), intent(in):: xd(nd), yd(nd)
+    real(kind(1.0d0)), intent(in):: lower(n2), upper(n2)
+    real(kind(1.0d0)), intent(inout):: pars(n2)
+    real(kind(1.0d0)), intent(out):: fmin
+    integer, intent(out):: message
     !
-    integer(kind=4):: info
-    real   (kind=8), parameter:: tol=1.0e-07
-    real   (kind=8):: fvec(nd)
+    integer:: info
+    real(kind(1.0d0)), parameter:: tol=1.0e-07
+    real(kind(1.0d0)):: fvec(nd)
     !
     external:: tgcfunc_frt1
     external:: tgcfunc_frt2

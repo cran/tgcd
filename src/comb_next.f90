@@ -48,13 +48,13 @@ subroutine comb_next ( n, k, a, done )
 !
   implicit none
 
-  integer ( kind = 4 ) k
+  integer k
 
-  integer ( kind = 4 ) a(k)
+  integer a(k)
   logical done
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) j
-  integer ( kind = 4 ) n
+  integer i
+  integer j
+  integer n
 
   if ( done ) then
 
@@ -122,10 +122,10 @@ subroutine i4vec_indicator ( n, a )
 !
   implicit none
 
-  integer ( kind = 4 ) n
+  integer n
 
-  integer ( kind = 4 ) a(n)
-  integer ( kind = 4 ) i
+  integer a(n)
+  integer i
 
   do i = 1, n
     a(i) = i

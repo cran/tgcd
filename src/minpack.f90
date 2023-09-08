@@ -39,9 +39,9 @@ function enorm ( n, x )
 !
   implicit none
 
-  integer ( kind = 4 ) n
-  real ( kind = 8 ) x(n)
-  real ( kind = 8 ) enorm
+  integer n
+  real(kind(1.0d0)) x(n)
+  real(kind(1.0d0)) enorm
 
   enorm = sqrt ( sum ( x(1:n)**2 ))
 
@@ -123,26 +123,28 @@ subroutine fdjac2 ( fcn, m, n, x, fvec, fjac, ldfjac, iflag, epsfcn, xd, yd, low
 !
   implicit none
 
-  integer ( kind = 4 ) ldfjac
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) n
+  integer ldfjac
+  integer m
+  integer n
 
-  real ( kind = 8 ) eps
-  real ( kind = 8 ) epsfcn
-  real ( kind = 8 ) epsmch
+  integer, parameter:: dbdbx=kind(1.0d0)
+
+  real ( dbdbx ) eps
+  real ( dbdbx ) epsfcn
+  real ( dbdbx ) epsmch
   external fcn
-  real ( kind = 8 ) fjac(ldfjac,n)
-  real ( kind = 8 ) fvec(m)
-  real ( kind = 8 ) h
+  real ( dbdbx ) fjac(ldfjac,n)
+  real ( dbdbx ) fvec(m)
+  real ( dbdbx ) h
   !!!integer ( kind = 4 ) i
-  integer ( kind = 4 ) iflag
-  integer ( kind = 4 ) j
-  real ( kind = 8 ) temp
-  real ( kind = 8 ) wa(m)
-  real ( kind = 8 ) x(n)
-  real ( kind = 8 ) xd(m), yd(m)
-  real ( kind = 8 ) lower(n), upper(n)
-  integer ( kind=4 ) bg
+  integer iflag
+  integer j
+  real ( dbdbx ) temp
+  real ( dbdbx ) wa(m)
+  real ( dbdbx ) x(n)
+  real ( dbdbx ) xd(m), yd(m)
+  real ( dbdbx ) lower(n), upper(n)
+  integer bg
 
   epsmch = epsilon ( epsmch )
 
@@ -323,56 +325,58 @@ subroutine lmdif ( fcn, m, n, x, fvec, ftol, xtol, gtol, maxfev, epsfcn, &
 !
   implicit none
 
-  integer ( kind = 4 ) ldfjac
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) n
+  integer ldfjac
+  integer m
+  integer n
 
-  real ( kind = 8 ) actred
-  real ( kind = 8 ) delta
-  real ( kind = 8 ) diag(n)
-  real ( kind = 8 ) dirder
-  real ( kind = 8 ) enorm
-  real ( kind = 8 ) epsfcn
-  real ( kind = 8 ) epsmch
-  real ( kind = 8 ) factor
+  integer, parameter:: dbdbx=kind(1.0d0)
+
+  real ( dbdbx ) actred
+  real ( dbdbx ) delta
+  real ( dbdbx ) diag(n)
+  real ( dbdbx ) dirder
+  real ( dbdbx ) enorm
+  real ( dbdbx ) epsfcn
+  real ( dbdbx ) epsmch
+  real ( dbdbx ) factor
   external fcn
-  real ( kind = 8 ) fjac(ldfjac,n)
-  real ( kind = 8 ) fnorm
-  real ( kind = 8 ) fnorm1
-  real ( kind = 8 ) ftol
-  real ( kind = 8 ) fvec(m)
-  real ( kind = 8 ) gnorm
-  real ( kind = 8 ) gtol
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) iflag
-  integer ( kind = 4 ) iter
-  integer ( kind = 4 ) info
-  integer ( kind = 4 ) ipvt(n)
-  integer ( kind = 4 ) j
-  integer ( kind = 4 ) l
-  integer ( kind = 4 ) maxfev
-  integer ( kind = 4 ) mode
-  integer ( kind = 4 ) nfev
-  integer ( kind = 4 ) nprint
-  real ( kind = 8 ) par
-  real ( kind = 8 ) pnorm
-  real ( kind = 8 ) prered
-  real ( kind = 8 ) qtf(n)
-  real ( kind = 8 ) ratio
-  real ( kind = 8 ) sum2
-  real ( kind = 8 ) temp
-  real ( kind = 8 ) temp1
-  real ( kind = 8 ) temp2
-  real ( kind = 8 ) wa1(n)
-  real ( kind = 8 ) wa2(n)
-  real ( kind = 8 ) wa3(n)
-  real ( kind = 8 ) wa4(m)
-  real ( kind = 8 ) x(n)
-  real ( kind = 8 ) xnorm
-  real ( kind = 8 ) xtol
-  real ( kind = 8 ) xd(m), yd(m)
-  real ( kind = 8 ) lower(n), upper(n)
-  integer ( kind=4 ) bg
+  real ( dbdbx ) fjac(ldfjac,n)
+  real ( dbdbx ) fnorm
+  real ( dbdbx ) fnorm1
+  real ( dbdbx ) ftol
+  real ( dbdbx ) fvec(m)
+  real ( dbdbx ) gnorm
+  real ( dbdbx ) gtol
+  integer i
+  integer iflag
+  integer iter
+  integer info
+  integer ipvt(n)
+  integer j
+  integer l
+  integer maxfev
+  integer mode
+  integer nfev
+  integer nprint
+  real ( dbdbx ) par
+  real ( dbdbx ) pnorm
+  real ( dbdbx ) prered
+  real ( dbdbx ) qtf(n)
+  real ( dbdbx ) ratio
+  real ( dbdbx ) sum2
+  real ( dbdbx ) temp
+  real ( dbdbx ) temp1
+  real ( dbdbx ) temp2
+  real ( dbdbx ) wa1(n)
+  real ( dbdbx ) wa2(n)
+  real ( dbdbx ) wa3(n)
+  real ( dbdbx ) wa4(m)
+  real ( dbdbx ) x(n)
+  real ( dbdbx ) xnorm
+  real ( dbdbx ) xtol
+  real ( dbdbx ) xd(m), yd(m)
+  real ( dbdbx ) lower(n), upper(n)
+  integer bg
 
   epsmch = epsilon ( epsmch )
 
@@ -788,31 +792,33 @@ subroutine lmdif1 ( fcn, m, n, x, fvec, tol, info, xd, yd, lower, upper, bg )
 !
   implicit none
 
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) n
+  integer m
+  integer n
 
-  real ( kind = 8 ) diag(n)
-  real ( kind = 8 ) epsfcn
-  real ( kind = 8 ) factor
+  integer, parameter:: dbdbx=kind(1.0d0)
+
+  real ( dbdbx ) diag(n)
+  real ( dbdbx ) epsfcn
+  real ( dbdbx ) factor
   external fcn
-  real ( kind = 8 ) fjac(m,n)
-  real ( kind = 8 ) ftol
-  real ( kind = 8 ) fvec(m)
-  real ( kind = 8 ) gtol
-  integer ( kind = 4 ) info
-  integer ( kind = 4 ) ipvt(n)
-  integer ( kind = 4 ) ldfjac
-  integer ( kind = 4 ) maxfev
-  integer ( kind = 4 ) mode
-  integer ( kind = 4 ) nfev
-  integer ( kind = 4 ) nprint
-  real ( kind = 8 ) qtf(n)
-  real ( kind = 8 ) tol
-  real ( kind = 8 ) x(n)
-  real ( kind = 8 ) xtol
-  real ( kind = 8 ) xd(m), yd(m)
-  real ( kind = 8 ) lower(n), upper(n)
-  integer ( kind=4 ) bg
+  real ( dbdbx ) fjac(m,n)
+  real ( dbdbx ) ftol
+  real ( dbdbx ) fvec(m)
+  real ( dbdbx ) gtol
+  integer info
+  integer ipvt(n)
+  integer ldfjac
+  integer maxfev
+  integer mode
+  integer nfev
+  integer nprint
+  real ( dbdbx ) qtf(n)
+  real ( dbdbx ) tol
+  real ( dbdbx ) x(n)
+  real ( dbdbx ) xtol
+  real ( dbdbx ) xd(m), yd(m)
+  real ( dbdbx ) lower(n), upper(n)
+  integer bg
 
   info = 0
 
@@ -944,36 +950,38 @@ subroutine lmpar ( n, r, ldr, ipvt, diag, qtb, delta, par, x, sdiag )
 !
   implicit none
 
-  integer ( kind = 4 ) ldr
-  integer ( kind = 4 ) n
+  integer ldr
+  integer n
 
-  real ( kind = 8 ) delta
-  real ( kind = 8 ) diag(n)
-  real ( kind = 8 ) dwarf
-  real ( kind = 8 ) dxnorm
-  real ( kind = 8 ) enorm
-  real ( kind = 8 ) gnorm
-  real ( kind = 8 ) fp
+  integer, parameter:: dbdbx=kind(1.0d0)
+
+  real ( dbdbx ) delta
+  real ( dbdbx ) diag(n)
+  real ( dbdbx ) dwarf
+  real ( dbdbx ) dxnorm
+  real ( dbdbx ) enorm
+  real ( dbdbx ) gnorm
+  real ( dbdbx ) fp
   !!!integer ( kind = 4 ) i
-  integer ( kind = 4 ) ipvt(n)
-  integer ( kind = 4 ) iter
-  integer ( kind = 4 ) j
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) l
-  integer ( kind = 4 ) nsing
-  real ( kind = 8 ) par
-  real ( kind = 8 ) parc
-  real ( kind = 8 ) parl
-  real ( kind = 8 ) paru
+  integer ipvt(n)
+  integer iter
+  integer j
+  integer k
+  integer l
+  integer nsing
+  real ( dbdbx ) par
+  real ( dbdbx ) parc
+  real ( dbdbx ) parl
+  real ( dbdbx ) paru
   !!!real ( kind = 8 ) qnorm
-  real ( kind = 8 ) qtb(n)
-  real ( kind = 8 ) r(ldr,n)
-  real ( kind = 8 ) sdiag(n)
-  real ( kind = 8 ) sum2
-  real ( kind = 8 ) temp
-  real ( kind = 8 ) wa1(n)
-  real ( kind = 8 ) wa2(n)
-  real ( kind = 8 ) x(n)
+  real ( dbdbx ) qtb(n)
+  real ( dbdbx ) r(ldr,n)
+  real ( dbdbx ) sdiag(n)
+  real ( dbdbx ) sum2
+  real ( dbdbx ) temp
+  real ( dbdbx ) wa1(n)
+  real ( dbdbx ) wa2(n)
+  real ( dbdbx ) x(n)
 !
 !  DWARF is the smallest positive magnitude.
 !
@@ -1224,28 +1232,30 @@ subroutine qrfac ( m, n, a, lda, pivot, ipvt, lipvt, rdiag, acnorm )
 !
   implicit none
 
-  integer ( kind = 4 ) lda
-  integer ( kind = 4 ) lipvt
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) n
+  integer lda
+  integer lipvt
+  integer m
+  integer n
 
-  real ( kind = 8 ) a(lda,n)
-  real ( kind = 8 ) acnorm(n)
-  real ( kind = 8 ) ajnorm
-  real ( kind = 8 ) enorm
-  real ( kind = 8 ) epsmch
+  integer, parameter:: dbdbx=kind(1.0d0)
+
+  real ( dbdbx ) a(lda,n)
+  real ( dbdbx ) acnorm(n)
+  real ( dbdbx ) ajnorm
+  real ( dbdbx ) enorm
+  real ( dbdbx ) epsmch
   !!!integer ( kind = 4 ) i
-  integer ( kind = 4 ) i4_temp
-  integer ( kind = 4 ) ipvt(lipvt)
-  integer ( kind = 4 ) j
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) kmax
-  integer ( kind = 4 ) minmn
+  integer i4_temp
+  integer ipvt(lipvt)
+  integer j
+  integer k
+  integer kmax
+  integer minmn
   logical pivot
-  real ( kind = 8 ) r8_temp(m)
-  real ( kind = 8 ) rdiag(n)
-  real ( kind = 8 ) temp
-  real ( kind = 8 ) wa(n)
+  real ( dbdbx ) r8_temp(m)
+  real ( dbdbx ) rdiag(n)
+  real ( dbdbx ) temp
+  real ( dbdbx ) wa(n)
 
   epsmch = epsilon ( epsmch )
 !
@@ -1430,28 +1440,30 @@ subroutine qrsolv ( n, r, ldr, ipvt, diag, qtb, x, sdiag )
 !
   implicit none
 
-  integer ( kind = 4 ) ldr
-  integer ( kind = 4 ) n
+  integer ldr
+  integer n
 
-  real ( kind = 8 ) c
-  real ( kind = 8 ) cotan
-  real ( kind = 8 ) diag(n)
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) ipvt(n)
-  integer ( kind = 4 ) j
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) l
-  integer ( kind = 4 ) nsing
-  real ( kind = 8 ) qtb(n)
-  real ( kind = 8 ) qtbpj
-  real ( kind = 8 ) r(ldr,n)
-  real ( kind = 8 ) s
-  real ( kind = 8 ) sdiag(n)
-  real ( kind = 8 ) sum2
-  real ( kind = 8 ) t
-  real ( kind = 8 ) temp
-  real ( kind = 8 ) wa(n)
-  real ( kind = 8 ) x(n)
+  integer, parameter:: dbdbx=kind(1.0d0)
+
+  real ( dbdbx ) c
+  real ( dbdbx ) cotan
+  real ( dbdbx ) diag(n)
+  integer i
+  integer ipvt(n)
+  integer j
+  integer k
+  integer l
+  integer nsing
+  real ( dbdbx ) qtb(n)
+  real ( dbdbx ) qtbpj
+  real ( dbdbx ) r(ldr,n)
+  real ( dbdbx ) s
+  real ( dbdbx ) sdiag(n)
+  real ( dbdbx ) sum2
+  real ( dbdbx ) t
+  real ( dbdbx ) temp
+  real ( dbdbx ) wa(n)
+  real ( dbdbx ) x(n)
 !
 !  Copy R and Q'*B to preserve input and initialize S.
 !

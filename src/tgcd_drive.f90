@@ -47,18 +47,18 @@ subroutine tgcd_drive(xd,yd,nd,pars,n2,fmin,lower,upper,nstart,&
 !             suminfo(5):: output, integer values, a summary of error information.
 !                message:: output, integer, error message: 0=success, 1=failure.
 !----------------------------------------------------------------------------------
-! Author:: Peng Jun, 2020.05.08.
+! Author:: Peng Jun, 2023.09.07.
 !----------------------------------------------------------------------------------
 ! Dependence:: subroutine tgcd_frt; 
 !              subroutine tgcd_nonfrt.
 !----------------------------------------------------------------------------------
     implicit none
-    integer(kind=4), intent(in):: nd, n2, nstart, alw(3), ggt, tp, bg
-    real   (kind=8), intent(in):: xd(nd), yd(nd), mdt, mwt, mr, kkf
-    real   (kind=8), intent(in):: lower(n2), upper(n2)
-    real   (kind=8), intent(inout):: pars(n2)
-    real   (kind=8), intent(out):: fmin, tlsig3(nd,(n2-3)/3+1), tlsig4(nd,(n2-3)/4+1)
-    integer(kind=4), intent(out):: suminfo(5), message
+    integer, intent(in):: nd, n2, nstart, alw(3), ggt, tp, bg
+    real(kind(1.0d0)), intent(in):: xd(nd), yd(nd), mdt, mwt, mr, kkf
+    real(kind(1.0d0)), intent(in):: lower(n2), upper(n2)
+    real(kind(1.0d0)), intent(inout):: pars(n2)
+    real(kind(1.0d0)), intent(out):: fmin, tlsig3(nd,(n2-3)/3+1), tlsig4(nd,(n2-3)/4+1)
+    integer, intent(out):: suminfo(5), message
     !
     if (tp==1 .or. tp==2 .or. tp==3 .or. tp==11 .or. tp==12) then
         !

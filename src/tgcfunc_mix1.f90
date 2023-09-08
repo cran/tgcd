@@ -17,21 +17,21 @@ subroutine tgcfunc_mix1(nd,n2,pars,fvec,iflag,&
 !        bg:: input, integer, subtract background or not,
 !             0=no subtraction, 1=subtraction.
 !----------------------------------------------------------
-! Author:: Peng Jun, 2020.05.08.
+! Author:: Peng Jun, 2023.09.07.
 !----------------------------------------------------------
 ! Dependence:: subroutine calcAm.
 !----------------------------------------------------------
     ! Arguments.
     implicit none 
-    integer(kind=4):: nd, n2, iflag, bg
-    real   (kind=8):: pars(n2), lower(n2), upper(n2),&
-                      fvec(nd), xd(nd), yd(nd)               
+    integer:: nd, n2, iflag, bg
+    real(kind(1.0d0)):: pars(n2), lower(n2), upper(n2),&
+                        fvec(nd), xd(nd), yd(nd)               
     ! Local variables.
-    real   (kind=8), parameter:: kbz=8.617385e-5
-    real   (kind=8):: xx(52+3), maxi, engy, maxt, Am, Rm, fmin,&
-                      alpha, xa, xb(nd), expv1, expv2(nd), expv3(nd),&
-                      ba, bb, bc
-    integer(kind=4):: i, j, n0
+    real(kind(1.0d0)), parameter:: kbz=8.617385e-5
+    real(kind(1.0d0)):: xx(52+3), maxi, engy, maxt, Am, Rm, fmin,&
+                        alpha, xa, xb(nd), expv1, expv2(nd), expv3(nd),&
+                        ba, bb, bc
+    integer:: i, j, n0
     !
     ! Bound constraints.
     do i=1, n2

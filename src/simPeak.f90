@@ -15,7 +15,7 @@ subroutine simPeak(nt, vect, y0, Nn, bv, model,&
 ! vecy(nt), output:: real values, y values at various temperatures.
 !     info, output:: integer, error message, info=2 means a successful work.
 !--------------------------------------------------------------------------------
-! Author:: Peng Jun, 2015.09.14; revised in 2016.01.19.
+! Author:: Peng Jun, 2023.09.07.
 !--------------------------------------------------------------------------------
 ! Dependence:: subroutine dlsoda.
 !--------------------------------------------------------------------------------

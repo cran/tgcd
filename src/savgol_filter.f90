@@ -10,18 +10,18 @@ subroutine savgol_filter(nl,nr,ld,m,n1,y,flag)
 ! y(n1):: input/output, real values, the data to be smoothed.
 !  flag:: output, integer, error message, 0=success, 1=failure.
 !-----------------------------------------------------------------------------------
-! Author: Peng Jun, 2019.03.26.
+! Author: Peng Jun, 2023.09.07.
 !-----------------------------------------------------------------------------------
 ! Dependence:: subroutine savgol.
 ! -----------------------------------------------------------------------------------
 
     implicit none
-    integer(kind=4), intent(in):: nl, nr, ld, m, n1
-    real   (kind=8), intent(inout):: y(n1)
-    integer(kind=4), intent(out):: flag
+    integer, intent(in):: nl, nr, ld, m, n1
+    real(kind(1.0d0)), intent(inout):: y(n1)
+    integer, intent(out):: flag
     ! Local variables.
-    integer(kind=4):: i, j, xl(nl+nr+1)
-    real   (kind=8):: y0(n1), coef(nl+nr+1)
+    integer:: i, j, xl(nl+nr+1)
+    real(kind(1.0d0)):: y0(n1), coef(nl+nr+1)
 
     xl(1) = 0
 

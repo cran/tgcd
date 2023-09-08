@@ -60,24 +60,26 @@ function bisect ( xx, nb, ner, l )
 !
   implicit none
 
-  real ( kind = 8 ) bisect
-  real ( kind = 8 ) crude
-  real ( kind = 8 ) d
-  real ( kind = 8 ) f
-  real ( kind = 8 ) fd
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) l
-  integer ( kind = 4 ) n0
+  integer, parameter:: dbdbx=kind(1.0d0)
+
+  real ( dbdbx ) bisect
+  real ( dbdbx ) crude
+  real ( dbdbx ) d
+  real ( dbdbx ) f
+  real ( dbdbx ) fd
+  integer i
+  integer l
+  integer n0
   parameter ( n0 = 500 )
-  integer ( kind = 4 ) nb
-  integer ( kind = 4 ), save :: nbits = 0
-  integer ( kind = 4 ) ner
-  real ( kind = 8 ) r
-  real ( kind = 8 ) test
-  real ( kind = 8 ) tol
-  real ( kind = 8 ) u
-  real ( kind = 8 ) x
-  real ( kind = 8 ) xx
+  integer nb
+  integer, save :: nbits = 0
+  integer ner
+  real ( dbdbx ) r
+  real ( dbdbx ) test
+  real ( dbdbx ) tol
+  real ( dbdbx ) u
+  real ( dbdbx ) x
+  real ( dbdbx ) xx
 
   bisect = 0.0D+00
   ner = 0
@@ -231,24 +233,26 @@ function crude ( xx, nb )
 !
   implicit none
 
-  real ( kind = 8 ) an2
-  real ( kind = 8 ) c13
-  real ( kind = 8 ) crude
-  real ( kind = 8 ) em
-  real ( kind = 8 ) em2
-  real ( kind = 8 ) em9
-  real ( kind = 8 ) eta
-  integer ( kind = 4 ) init
-  integer ( kind = 4 ) nb
-  real ( kind = 8 ) reta
-  real ( kind = 8 ) s2
-  real ( kind = 8 ) s21
-  real ( kind = 8 ) s22
-  real ( kind = 8 ) s23
-  real ( kind = 8 ) t
-  real ( kind = 8 ) ts
-  real ( kind = 8 ) xx
-  real ( kind = 8 ) zl
+  integer, parameter:: dbdbx=kind(1.0d0)
+
+  real ( dbdbx ) an2
+  real ( dbdbx ) c13
+  real ( dbdbx ) crude
+  real ( dbdbx ) em
+  real ( dbdbx ) em2
+  real ( dbdbx ) em9
+  real ( dbdbx ) eta
+  integer init
+  integer nb
+  real ( dbdbx ) reta
+  real ( dbdbx ) s2
+  real ( dbdbx ) s21
+  real ( dbdbx ) s22
+  real ( dbdbx ) s23
+  real ( dbdbx ) t
+  real ( dbdbx ) ts
+  real ( dbdbx ) xx
+  real ( dbdbx ) zl
 
   save c13
   save em
@@ -365,10 +369,12 @@ subroutine nbits_compute ( nbits )
 !
   implicit none
 
-  real ( kind = 8 ) b
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) nbits
-  real ( kind = 8 ) v
+  integer, parameter:: dbdbx=kind(1.0d0)
+
+  real ( dbdbx ) b
+  integer i
+  integer nbits
+  real ( dbdbx ) v
 
   nbits = 0
 
@@ -445,45 +451,47 @@ function wapr ( x, nb, nerror, l )
 !
   implicit none
 
-  real ( kind = 8 ) an2
-  real ( kind = 8 ) an3
-  real ( kind = 8 ) an4
-  real ( kind = 8 ) an5
-  real ( kind = 8 ) an6
-  real ( kind = 8 ) c13
-  real ( kind = 8 ) c23
-  real ( kind = 8 ) d12
-  real ( kind = 8 ) delx
-  real ( kind = 8 ) em
-  real ( kind = 8 ) em2
-  real ( kind = 8 ) em9
-  real ( kind = 8 ) eta
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) init
-  integer ( kind = 4 ) l
-  integer ( kind = 4 ) m
-  integer ( kind = 4 ) nb
-  integer ( kind = 4 ) nbits
-  integer ( kind = 4 ) nerror
-  integer ( kind = 4 ) niter
-  real ( kind = 8 ) reta
-  real ( kind = 8 ) s2
-  real ( kind = 8 ) s21
-  real ( kind = 8 ) s22
-  real ( kind = 8 ) s23
-  real ( kind = 8 ) t
-  real ( kind = 8 ) tb
-  real ( kind = 8 ) tb2
-  real ( kind = 8 ) temp
-  real ( kind = 8 ) temp2
-  real ( kind = 8 ) ts
-  real ( kind = 8 ) wapr
-  real ( kind = 8 ) x
-  real ( kind = 8 ) x0
-  real ( kind = 8 ) x1
-  real ( kind = 8 ) xx
-  real ( kind = 8 ) zl
-  real ( kind = 8 ) zn
+  integer, parameter:: dbdbx=kind(1.0d0)
+
+  real ( dbdbx ) an2
+  real ( dbdbx ) an3
+  real ( dbdbx ) an4
+  real ( dbdbx ) an5
+  real ( dbdbx ) an6
+  real ( dbdbx ) c13
+  real ( dbdbx ) c23
+  real ( dbdbx ) d12
+  real ( dbdbx ) delx
+  real ( dbdbx ) em
+  real ( dbdbx ) em2
+  real ( dbdbx ) em9
+  real ( dbdbx ) eta
+  integer i
+  integer init
+  integer l
+  integer m
+  integer nb
+  integer nbits
+  integer nerror
+  integer niter
+  real ( dbdbx ) reta
+  real ( dbdbx ) s2
+  real ( dbdbx ) s21
+  real ( dbdbx ) s22
+  real ( dbdbx ) s23
+  real ( dbdbx ) t
+  real ( dbdbx ) tb
+  real ( dbdbx ) tb2
+  real ( dbdbx ) temp
+  real ( dbdbx ) temp2
+  real ( dbdbx ) ts
+  real ( dbdbx ) wapr
+  real ( dbdbx ) x
+  real ( dbdbx ) x0
+  real ( dbdbx ) x1
+  real ( dbdbx ) xx
+  real ( dbdbx ) zl
+  real ( dbdbx ) zn
 
   save an3
   save an4

@@ -11,7 +11,7 @@ subroutine calcLv(ax,bx,alpha,maxt,engy,Lv,fmin)
 !       Lv:: output, real value, resulting value.
 !     fmin:: output, real value, minimized objective.
 !-----------------------------------------------------
-! Author:: Peng Jun, 2019.03.14.
+! Author:: Peng Jun, 2023.09.07.
 !-----------------------------------------------------
 ! Dependence:: inner function fcn.
 !-----------------------------------------------------
@@ -21,12 +21,12 @@ subroutine calcLv(ax,bx,alpha,maxt,engy,Lv,fmin)
 !-----------------------------------------------------
     implicit none
     ! Arguments.
-    real   (kind=8), intent(in):: ax, bx, alpha, maxt, engy
-    real   (kind=8), intent(out):: Lv, fmin
+    real(kind(1.0d0)), intent(in):: ax, bx, alpha, maxt, engy
+    real(kind(1.0d0)), intent(out):: Lv, fmin
     ! Local variables.
-    real   (kind=8):: a, b, c, d, e, p, q, r, u, v, w, x
-    real   (kind=8):: t2, fu, fv, fw, fx, xm, eps, tol1, tol3
-    real   (kind=8), parameter:: tol=1.490116D-08, kbz=8.617385D-5
+    real(kind(1.0d0)):: a, b, c, d, e, p, q, r, u, v, w, x
+    real(kind(1.0d0)):: t2, fu, fv, fw, fx, xm, eps, tol1, tol3
+    real(kind(1.0d0)), parameter:: tol=1.490116D-08, kbz=8.617385D-5
     !
     c = (3.0D+00 - dsqrt(5.0D+00)) * 0.5D+00
     eps = EPSILON(0.0D+00) 
@@ -137,7 +137,7 @@ subroutine calcLv(ax,bx,alpha,maxt,engy,Lv,fmin)
     ! Inner function fcn.
     function fcn(x)
         implicit none
-        real   (kind=8):: fcn, x
+        real(kind(1.0d0)):: fcn, x
         !
         fcn = (alpha-(x-1.0)*exp((2.0-x)/x*(1.0-2.0*kbz*maxt/engy)))**2
         !

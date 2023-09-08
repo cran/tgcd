@@ -11,7 +11,7 @@ subroutine ludcmp(a,n,indx,d,flag)
 !           the number of row interchanges was even or odd.
 !    flag:: output, integer, error message, 0=success, 1=singular matrix.
 !-------------------------------------------------------------------------
-! Author: Peng Jun, 2019.03.20.
+! Author: Peng Jun, 2023.09.07.
 !-------------------------------------------------------------------------
 ! Dependence:: No.--------------------------------------------------------
 !-------------------------------------------------------------------------
@@ -20,13 +20,13 @@ subroutine ludcmp(a,n,indx,d,flag)
 ! NOTE: THIS SUBROUTINE IS REMODIFIED FROM PAGE.38 IN Press et al.
 ! ------------------------------------------------------------------------
     implicit none
-    integer(kind=4), intent(in):: n
-    integer(kind=4), intent(out):: indx(n), flag
-    real   (kind=8), intent(inout):: a(n,n)
-    real   (kind=8), intent(out):: d
+    integer, intent(in):: n
+    integer, intent(out):: indx(n), flag
+    real(kind(1.0d0)), intent(inout):: a(n,n)
+    real(kind(1.0d0)), intent(out):: d
     ! Local variables.
-    integer(kind=4):: i, j, k, imax
-    real   (kind=8):: aamax, dum, summ, vv(n)
+    integer:: i, j, k, imax
+    real(kind(1.0d0)):: aamax, dum, summ, vv(n)
    
     indx = 0
 

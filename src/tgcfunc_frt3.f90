@@ -17,20 +17,20 @@ subroutine tgcfunc_frt3(nd,n2,pars,fvec,iflag,&
 !        bg:: input, integer, subtract background or not,
 !             0=no subtraction, 1=subtraction.
 !---------------------------------------------------------
-! Author:: Peng Jun, 2020.05.08.
+! Author:: Peng Jun, 2023.09.07.
 !---------------------------------------------------------
 ! Dependence:: NO.
 !---------------------------------------------------------
     ! Arguments.
     implicit none 
-    integer(kind=4):: nd, n2, iflag, bg
-    real   (kind=8):: pars(n2), lower(n2), upper(n2),&
-                      fvec(nd), xd(nd), yd(nd)                 
+    integer:: nd, n2, iflag, bg
+    real(kind(1.0d0)):: pars(n2), lower(n2), upper(n2),&
+                        fvec(nd), xd(nd), yd(nd)                 
     ! Local variables.
-    real   (kind=8), parameter:: kbz=8.617385e-5
-    real   (kind=8):: xx(39+3), maxi, engy, maxt, xa, xb(nd), expv(nd),&
-                      ba, bb, bc            
-    integer(kind=4):: i, n0
+    real(kind(1.0d0)), parameter:: kbz=8.617385e-5
+    real(kind(1.0d0)):: xx(39+3), maxi, engy, maxt, xa, xb(nd), expv(nd),&
+                        ba, bb, bc            
+    integer:: i, n0
     !
     ! Bound constraints.
     do i=1, n2

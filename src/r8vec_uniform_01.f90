@@ -56,12 +56,12 @@ subroutine r8vec_uniform_01 ( n, seed, r )
 !
   implicit none
 
-  integer ( kind = 4 ) n
+  integer n
 
-  integer ( kind = 4 ) i
-  integer ( kind = 4 ) k
-  integer ( kind = 4 ) seed
-  real ( kind = 8 ) r(n)
+  integer i
+  integer k
+  integer seed
+  real(kind(1.0d0)) r(n)
 
   do i = 1, n
 
@@ -73,7 +73,7 @@ subroutine r8vec_uniform_01 ( n, seed, r )
       seed = seed + 2147483647
     end if
 
-    r(i) = real ( seed, kind = 8 ) * 4.656612875D-10
+    r(i) = real ( seed, kind(1.0d0) ) * 4.656612875D-10
 
   end do
 

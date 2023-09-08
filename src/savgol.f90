@@ -9,7 +9,7 @@ subroutine savgol(nl,nr,ld,m,coef,flag)
 ! coef(nl+nr+1):: output, real values, calculated coefficents in wrap-around order.
 !          flag:: output, integer, error message, 0=success, 1=failure.
 !-----------------------------------------------------------------------------------
-! Author: Peng Jun, 2019.03.20.
+! Author: Peng Jun, 2023.09.07.
 !-----------------------------------------------------------------------------------
 ! Dependence:: subroutine ludcmp;
 !              subroutine lubksb.
@@ -19,13 +19,13 @@ subroutine savgol(nl,nr,ld,m,coef,flag)
 ! NOTE: THIS SUBROUTINE IS REMODIFIED FROM PAGE.646 IN Press et al.
 ! -----------------------------------------------------------------------------------
     implicit none
-    integer(kind=4), intent(in):: nl, nr, ld, m
-    real   (kind=8), intent(inout):: coef(nl+nr+1)
-    integer(kind=4), intent(out):: flag
+    integer, intent(in):: nl, nr, ld, m
+    real(kind(1.0d0)), intent(inout):: coef(nl+nr+1)
+    integer, intent(out):: flag
     ! Local variables.
-    integer(kind=4):: imj, ipj, k, kk, mm, indx(m+1)
+    integer:: imj, ipj, k, kk, mm, indx(m+1)
 
-    real   (kind=8):: d, fac, summ, a(m+1,m+1), b(m+1)
+    real(kind(1.0d0)):: d, fac, summ, a(m+1,m+1), b(m+1)
 
     flag = 0
 

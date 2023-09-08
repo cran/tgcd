@@ -7,7 +7,7 @@ subroutine lubksb(a,n,indx,b)
 !    b(n):: output, real values, the solution vector X for 
 !                   linear equations A*X=B.
 !-------------------------------------------------------------------------
-! Author: Peng Jun, 2019.03.18.
+! Author: Peng Jun, 2023.09.07.
 !-------------------------------------------------------------------------
 ! Dependence:: No.--------------------------------------------------------
 !-------------------------------------------------------------------------
@@ -16,12 +16,12 @@ subroutine lubksb(a,n,indx,b)
 ! NOTE: THIS SUBROUTINE IS REMODIFIED FROM PAGE.39 IN Press et al.
 ! -------------------------------------------------------------------------
     implicit none
-    integer(kind=4), intent(in):: n, indx(n)
-    real   (kind=8), intent(in):: a(n,n)
-    real   (kind=8), intent(inout):: b(n)
+    integer, intent(in):: n, indx(n)
+    real(kind(1.0d0)), intent(in):: a(n,n)
+    real(kind(1.0d0)), intent(inout):: b(n)
    ! Local variables.
-    integer(kind=4):: i, ii, j, ll
-    real   (kind=8):: summ
+    integer:: i, ii, j, ll
+    real(kind(1.0d0)):: summ
 
     ii = 0
 

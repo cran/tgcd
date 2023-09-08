@@ -16,7 +16,7 @@ subroutine qeOTOR(nt, vect, y0, Nn, Ah,&
 ! vecy(nt), output:: real values, y values at various temperatures.
 !     info, output:: integer, error message, info=2 means a successful work.
 !--------------------------------------------------------------------------------
-! Author:: Peng Jun, 2015.09.13; revised in 2016.01.19.
+! Author:: Peng Jun, 2023.09.07.
 !--------------------------------------------------------------------------------
 ! Dependence:: subroutine dlsoda.
 !--------------------------------------------------------------------------------

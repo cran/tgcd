@@ -8,7 +8,7 @@ subroutine wrightOmega(Z, W)
 ! W:: output, real value, the calculated 
 !     wright Omega function for Z value.
 !----------------------------------------------------------
-! Author:: Peng Jun, 2016.05.19.
+! Author:: Peng Jun, 2023.09.07.
 !----------------------------------------------------------
 ! Dependence:: No.
 !--------------------------------------------------------------------------------
@@ -21,19 +21,19 @@ subroutine wrightOmega(Z, W)
 !            https://github.com/horchler/wrightOmegaq/blob/master/wrightOmegaq.m
 !-------------------------------------------------------------------------------
     implicit none
-    real   (kind=8), intent(in):: Z
-    real   (kind=8), intent(out):: W
+    real(kind(1.0d0)), intent(in):: Z
+    real(kind(1.0d0)), intent(out):: W
     ! Local variables.
-    real   (kind=8):: X, y, lzi, r, w1, w2
-    real   (kind=8), parameter:: PI=3.141593D+00,&
-                                 PI2=1.570796D+00,&
-                                 EXP1=2.718282D+00,&
-                                 EXP2=7.389056D+00,&
-                                 LN2=0.6931472D+00,&
-                                 omega=0.5671432904097838D+00,&
-                                 oneThird=0.3333333333333D+00,&
-                                 tol=2.2204D-16,&
-                                 lg=5.764608D+17
+    real(kind(1.0d0)):: X, y, lzi, r, w1, w2
+    real(kind(1.0d0)), parameter:: PI=3.141593D+00,&
+                                   PI2=1.570796D+00,&
+                                   EXP1=2.718282D+00,&
+                                   EXP2=7.389056D+00,&
+                                   LN2=0.6931472D+00,&
+                                   omega=0.5671432904097838D+00,&
+                                   oneThird=0.3333333333333D+00,&
+                                   tol=2.2204D-16,&
+                                   lg=5.764608D+17
     X=Z
     !
     if(Z>lg) then

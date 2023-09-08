@@ -7,7 +7,7 @@ subroutine hpSort(vec,n,indx)
 !      n : input, integer, the dimension of the vector.
 !   indx : output, integers, the orders of the elements.
 ! --------------------------------------------------------------------
-! Author: Peng Jun, 2019.03.26.
+! Author: Peng Jun, 2023.09.07.
 !---------------------------------------------------------------------
 ! Dependence:: No.----------------------------------------------------
 !---------------------------------------------------------------------
@@ -16,12 +16,12 @@ subroutine hpSort(vec,n,indx)
 ! NOTE: THIS SUBROUTINE IS REMODIFIED FROM PAGE.329 IN Press et al.
 ! --------------------------------------------------------------------
     implicit none
-    integer(kind=4), intent(in):: n
-    real   (kind=8), intent(inout):: vec(n)
-    integer(kind=4), intent(out):: indx(n)
+    integer, intent(in):: n
+    real(kind(1.0d0)), intent(inout):: vec(n)
+    integer, intent(out):: indx(n)
     ! Local variables
-    integer(kind=4):: i, j, k, ir, rraIndx
-    real   (kind=8):: rra
+    integer:: i, j, k, ir, rraIndx
+    real(kind(1.0d0)):: rra
     !
     if (n<2) then 
         indx = 1
